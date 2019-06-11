@@ -1,97 +1,101 @@
-/*
-    This exercise has been updated to use Solidity version 0.5
-    Breaking changes from 0.4 to 0.5 can be found here:
-    https://solidity.readthedocs.io/en/v0.5.0/050-breaking-changes.html
-*/
-
 pragma solidity ^0.5.0;
 
-contract SimpleBank {
+import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
+import 'openzeppelin-solidity/contracts/math/SafeMath.sol';
+import 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
+
+/// @author David Noel
+/// @title A bank contract that pays its users interest on a daily basis.
+contract SimpleBank is Ownable, Pausable {
+    using SafeMath for uint256;
 
     //
     // State variables
     //
-    /* Fill in the keyword. Hint: We want to protect our users balance from other contracts*/
+
+    /* Protect our users balance from being viewable from other contracts. */
     mapping (address => uint) private balances;
 
-    /* Fill in the keyword. We want to create a getter function and allow contracts to be able to see if a user is enrolled.  */
+    /* Getter function to allow contracts to be able to see if a user is enrolled. */
     mapping (address => bool) public enrolled;
-
-    /* Let's make sure everyone knows who owns the bank. Use the appropriate keyword for this*/
-    address public owner;
 
     //
     // Events - publicize actions to external listeners
     //
 
-    /* Add an argument for this event, an accountAddress */
-    event LogEnrolled(address indexed accountAddress);
+    /* When a user signs up */
+    event Enrolled(address indexed accountAddress);
 
-    /* Add 2 arguments for this event, an accountAddress and an amount */
-    event LogDepositMade(address indexed accountAddress, uint amount);
+    /* When a user makes a deposit */
+    event Deposited(address indexed accountAddress, uint amount);
 
-    /* Create an event called LogWithdrawal */
-    /* Add 3 arguments for this event, an accountAddress, withdrawAmount and a newBalance */
-    event LogWithdrawal(address indexed accountAddress, uint withdrawAmount, uint newBalance);
+    /* When a user makes a withdrawal */
+    event Withdrawn(address indexed accountAddress, uint withdrawAmount, uint newBalance);
+
+    //
+    // Modifiers
+    //
+
+    modifier isEnrolled(){
+        require(enrolled[msg.sender], "You must first enroll");
+        _;
+    }
+
+    modifier checkEnroll(){
+        require(msg.sender != address(0),"Invalid address.");
+        require(!enrolled[msg.sender], "Already enrolled.");
+        _;
+    }
+
+    modifier checkWithdraw(uint withdrawAmount){
+        require(withdrawAmount > 0, "Withrawal must be greater than 0");
+        require(balances[msg.sender] >= withdrawAmount, "Insufficient balance");
+        _;
+    }
 
     //
     // Functions
     //
 
-    /* Use the appropriate global variable to get the sender of the transaction */
-    constructor() public {
-        /* Set the owner to the creator of this contract */
-        owner = msg.sender;
-    }
-
     /// @notice Enroll a customer with the bank
     /// @return The users enrolled status
-    // Emit the appropriate event
-    function enroll() public returns (bool){
+    function enroll() public checkEnroll() whenNotPaused() returns (bool _enrolled){
         enrolled[msg.sender] = true;
-        emit LogEnrolled(msg.sender);
-        return enrolled[msg.sender];
+        _enrolled = enrolled[msg.sender];
+        emit Enrolled(msg.sender);
     }
 
     /// @notice Get balance
     /// @return The balance of the user
-    // A SPECIAL KEYWORD prevents function from editing state variables;
-    // allows function to run locally/off blockchain
     function getBalance() public view returns (uint) {
-        /* Get the balance of the sender of this transaction */
         return balances[msg.sender];
+    }
+
+    /// @notice Get balance of contract
+    /// @return The balance of the contract
+    function getContractBalance() public view returns(uint) {
+        return address(this).balance;
     }
 
     /// @notice Deposit ether into bank
     /// @return The balance of the user after the deposit is made
-    // Add the appropriate keyword so that this function can receive ether
-    // Use the appropriate global variables to get the transaction sender and value
-    // Emit the appropriate event
     // Users should be enrolled before they can make deposits
-    function deposit() public payable returns (uint) {
-        /* Add the amount to the user's balance, call the event associated with a deposit,
-          then return the balance of the user */
-          require(enrolled[msg.sender], "Enroll before you can make deposits");
-          balances[msg.sender] += msg.value;
-          emit LogDepositMade(msg.sender, msg.value);
-          return balances[msg.sender];
+    function deposit() external payable isEnrolled() whenNotPaused() returns (uint _balance) {
+        require(msg.value > 0, "Deposit must be greater than 0");
+        balances[msg.sender] = balances[msg.sender].add(msg.value);
+        _balance = balances[msg.sender];
+        emit Deposited(msg.sender, msg.value);
     }
 
     /// @notice Withdraw ether from bank
     /// @dev This does not return any excess ether sent to it
     /// @param withdrawAmount amount you want to withdraw
     /// @return The balance remaining for the user
-    // Emit the appropriate event
-    function withdraw(uint withdrawAmount) public returns (uint) {
-        /* If the sender's balance is at least the amount they want to withdraw,
-           Subtract the amount from the sender's balance, and try to send that amount of ether
-           to the user attempting to withdraw.
-           return the user's balance.*/
-           require(balances[msg.sender] >= withdrawAmount, "Insufficient balance");
-           balances[msg.sender] -= withdrawAmount;
-           msg.sender.transfer(withdrawAmount);
-           emit LogWithdrawal(msg.sender, withdrawAmount, balances[msg.sender]);
-           return balances[msg.sender];
+    function withdraw(uint withdrawAmount) public isEnrolled() checkWithdraw(withdrawAmount) returns (uint _balance) {
+        balances[msg.sender] = balances[msg.sender].sub(withdrawAmount);
+        msg.sender.transfer(withdrawAmount);
+        _balance = balances[msg.sender];
+        emit Withdrawn(msg.sender, withdrawAmount, _balance);
     }
 
     // Fallback function - Called if other functions don't match call or
@@ -100,6 +104,6 @@ contract SimpleBank {
     // Added so ether sent to this contract is reverted if the contract fails
     // otherwise, the sender's money is transferred to contract
     function() external {
-        revert();
+        revert("Reverting contract state.");
     }
 }
