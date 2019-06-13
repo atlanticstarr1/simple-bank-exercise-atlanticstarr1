@@ -1,17 +1,26 @@
-import HDWalletProvider from "truffle-hdwallet-provider";
+const HDWalletProvider = require("truffle-hdwallet-provider");
+const fs = require("fs");
+const mnemonic = fs
+  .readFileSync(".secret")
+  .toString()
+  .trim();
 
-const mnemonic = ""; // Enter the mnemonic for your rinkeby account (testnet deployment only)
-
-export const networks = {
-  development: {
-    host: "localhost",
-    port: 8545,
-    network_id: "*" // Match any network id
-  },
-  rinkeby: {
-    provider: function() {
-      return new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/v3/[your infura link here]");
+module.exports = {
+  networks: {
+    development: {
+      host: "localhost",
+      port: 8545,
+      network_id: "*" // Match any network id
     },
-    network_id: 4
+
+    rinkeby: {
+      provider: function() {
+        return new HDWalletProvider(
+          mnemonic,
+          "https://rinkeby.infura.io/v3/58d2a40f4d1f4cfb990f68d50ce7b419"
+        );
+      },
+      network_id: 4
+    }
   }
 };

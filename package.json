@@ -1,0 +1,26 @@
+{
+  "name": "simple-bank-exercise-atlanticstarr1",
+  "version": "1.0.0",
+  "description": "A simple bank smart contract",
+  "dependencies": {
+    "openzeppelin-solidity": "^2.3.0",
+    "truffle-hdwallet-provider": "^1.0.10"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/atlanticstarr1/simple-bank-exercise-atlanticstarr1.git"
+  },
+  "keywords": [
+    "smart",
+    "contract",
+    "bank",
+    "oracle"
+  ],
+  "author": "David Noel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/atlanticstarr1/simple-bank-exercise-atlanticstarr1/issues"
+  },
+  "homepage": "https://github.com/atlanticstarr1/simple-bank-exercise-atlanticstarr1#readme"
+}

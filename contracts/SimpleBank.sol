@@ -78,6 +78,21 @@ contract SimpleBank is Ownable, Pausable {
         return interestRate;
     }
 
+    function addInterest() private{
+        uint interestRate;
+        bool ok;
+        (interestRate,ok) = myLighthouse.peekData();
+
+         // WARN: This unbounded for loop is an anti-pattern
+
+        for (uint i=0; i<accounts.length; i++) {
+            address customerAddress = accounts[i];
+            uint balance = balances[customerAddress];
+            uint interest = interestRate * 100 * balance / 10000;
+            balances[customerAddress] = balances[customerAddress].add(interest);
+        }
+    }
+
     /// @notice Enroll a customer with the bank
     /// @return The users enrolled status
     function enroll() public checkEnroll whenNotPaused returns (bool _enrolled){
