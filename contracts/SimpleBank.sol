@@ -13,12 +13,15 @@ contract SimpleBank is Ownable, Pausable, Searcher {
 
     // State variables
 
-    // Banks interest rate
+    // Bank interest rate
     uint public interestRate = 3;
     // Min balance required (USD) to start receiving interest payments.
     uint public minDepositUsd = 1;
+    // Eth equivalent of min balance.
     uint public minDepositEth;
-    uint private totalInterestPaid = 0;
+    // Total interest paid by bank to date
+    uint private totalInterestPaid;
+    // Are interest payments running?
     bool public running;
     // ETHUSD lighthouse oracle
     ILighthouse  public myLighthouse;
