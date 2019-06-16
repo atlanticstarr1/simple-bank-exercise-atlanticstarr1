@@ -4,57 +4,47 @@ import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 import 'openzeppelin-solidity/contracts/math/SafeMath.sol';
 import 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
 import "../contracts/Ilighthouse.sol"; // Rhombus oracle
+import "../contracts/Lighthouse.sol";
 
 /// @author David Noel
 /// @title A bank contract that pays its users interest on a daily basis.
 contract SimpleBank is Ownable, Pausable, Searcher {
     using SafeMath for uint256;
 
-    //
     // State variables
-    //
 
     // Banks interest rate
     uint public interestRate = 3;
     // Min balance required (USD) to start receiving interest payments.
-    uint public minBalanceToGetInterestUSD = 1;
-    uint public minBalanceToGetInterestEth;
+    uint public minDepositUsd = 1;
+    uint public minDepositEth;
+    uint private totalInterestPaid = 0;
     bool public running;
     // ETHUSD lighthouse oracle
     ILighthouse  public myLighthouse;
     // Array of users registered
     address[] private accounts;
-
     /* Protect our users balance from being viewable from other contracts. */
     mapping (address => uint) private balances;
-
     /* Getter function to allow contracts to be able to see if a user is enrolled. */
     mapping (address => bool) public enrolled;
 
-    //
-    // Events - publicize actions to external listeners
-    //
+    // Events
 
     /* When a user signs up */
     event Enrolled(address indexed accountAddress);
-
     /* When a user makes a deposit */
-    event Deposited(address indexed accountAddress, uint amount, uint newBalance);
-
+    event Deposited(address indexed accountAddress, uint amount);
     /* When a user makes a withdrawal */
     event Withdrawn(address indexed accountAddress, uint withdrawAmount, uint newBalance);
-
     /* When a user closes their account */
-    event Closed(address indexed accountAddress, uint balanceAtClose);
-
-    event PaymentReceived(address sender, uint amount); // fallback function
+    event ClosedAccount(address indexed accountAddress, uint balanceAtClose);
     event InterestPaymentStarted(uint _rate, uint _minBalanceRequired);
     event InterestPaymentStopped();
+    event InterestPaid(uint _totalInterest);
     event DataNotValid();   // for invalid oracle data
 
-    //
     // Modifiers
-    //
 
     modifier isEnrolled(){
         require(enrolled[msg.sender], "You must first enroll");
@@ -70,7 +60,7 @@ contract SimpleBank is Ownable, Pausable, Searcher {
     modifier checkWithdraw(uint withdrawAmount){
         require(withdrawAmount > 0, "Withrawal must be greater than 0");
         require(balances[msg.sender] >= withdrawAmount, "Insufficient balance");
-        require(getContractBalance() >= balances[msg.sender],"Contract doesn't have enough money.");
+        require(address(this).balance >= balances[msg.sender],"Bank doesn't have enough money.");
         _;
     }
 
@@ -79,14 +69,14 @@ contract SimpleBank is Ownable, Pausable, Searcher {
         _;
     }
 
+    // Constructor
+
     constructor(ILighthouse _myLighthouse) public {
         myLighthouse = _myLighthouse;
         startPayments();
     }
 
-    //
     // Functions
-    //
 
     /// @notice Enroll a customer with the bank
     /// @return The users enrolled status
@@ -104,7 +94,7 @@ contract SimpleBank is Ownable, Pausable, Searcher {
         require(msg.value > 0, "Deposit must be greater than 0");
         balances[msg.sender] = balances[msg.sender].add(msg.value);
         _balance = balances[msg.sender];
-        emit Deposited(msg.sender, msg.value, _balance);
+        emit Deposited(msg.sender, msg.value);
     }
 
     /// @notice Withdraw ether from bank
@@ -129,7 +119,7 @@ contract SimpleBank is Ownable, Pausable, Searcher {
         if(totalBalance > 0){
             msg.sender.transfer(totalBalance);
         }
-        emit Closed(msg.sender, totalBalance);
+        emit ClosedAccount(msg.sender, totalBalance);
         return !enrolled[msg.sender];
     }
 
@@ -145,20 +135,33 @@ contract SimpleBank is Ownable, Pausable, Searcher {
         return accounts;
     }
 
+    /// @notice Get total accounts
+    /// @return Account total
+    function getNumAccounts() public view onlyOwner returns (uint) {
+        return accounts.length;
+    }
+
     /// @notice Get contract balance
     /// @return The balance of the contract
     function getContractBalance() public view onlyOwner returns(uint) {
         return address(this).balance;
     }
 
-    function setInterestRate(uint _rate) public onlyOwner returns(uint){
+    function setInterestRate(uint _rate) public onlyOwner {
+        require(_rate <= 6, "rate should be no more than 6");
         interestRate = _rate;
+    }
+
+    // set minimum deposit in USD
+    function setMinDeposit(uint _minDeposit) public onlyOwner {
+        require(_minDeposit > 0, "deposit should be greater than 0");
+        minDepositUsd = _minDeposit;
     }
 
     function startPayments() public onlyOwner {
         if(!running){
         running = true;
-        emit InterestPaymentStarted(interestRate, minBalanceToGetInterestUSD);
+        emit InterestPaymentStarted(interestRate, minDepositUsd);
         }
     }
 
@@ -170,7 +173,7 @@ contract SimpleBank is Ownable, Pausable, Searcher {
     }
 
     // Gets called everytime lighthouse data changes.
-    function poke() public onlyLighthouse {
+    function poke() public onlyLighthouse whenNotPaused {
         bool valid;
         uint tenCents;
         if (running) {
@@ -179,7 +182,7 @@ contract SimpleBank is Ownable, Pausable, Searcher {
                 emit DataNotValid();
                 return;
             }
-            minBalanceToGetInterestEth = tenCents * 10 * minBalanceToGetInterestUSD; // calculate 1 USD in Ether
+            minDepositEth = tenCents * 10 * minDepositUsd; // calculate 1 USD in Ether
             payInterest();
         }
     }
@@ -189,20 +192,19 @@ contract SimpleBank is Ownable, Pausable, Searcher {
         for (uint i = 0; i < accounts.length; i++) {
             address customerAddress = accounts[i];
             uint balance = balances[customerAddress]; // get customer balance in eth
-            if(balance != 0 && balance >= minBalanceToGetInterestEth){ // customer is eligible to get interest payments
+            if(balance != 0 && balance >= minDepositEth){ // customer is eligible to get interest payments
                 uint interest = (balance * interestRate).div(36500);
                 balances[customerAddress] = balances[customerAddress].add(interest);
+                totalInterestPaid += interest;
             }
         }
+        emit InterestPaid(totalInterestPaid);
     }
 
     // Fallback function - Called if other functions don't match call or
     // sent ether without data
-    // Typically, called when invalid data is sent
-    // Added so ether sent to this contract is reverted if the contract fails
-    // otherwise, the sender's money is transferred to contract
     function() external payable {
         require(msg.data.length == 0, "data sent with message");
-        emit PaymentReceived(msg.sender, msg.value);
+        emit Deposited(msg.sender, msg.value);
     }
 }
