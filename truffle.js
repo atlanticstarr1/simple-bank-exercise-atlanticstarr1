@@ -6,6 +6,7 @@ const mnemonic = fs
   .trim();
 
 module.exports = {
+  contracts_build_directory: "./app/src/contracts",
   networks: {
     development: {
       host: "localhost",
