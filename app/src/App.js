@@ -1,16 +1,24 @@
 import React from "react";
-import { DrizzleProvider } from "drizzle-react";
-import { LoadingContainer } from "drizzle-react-components";
+import { Drizzle } from "drizzle";
+import { drizzleReactHooks } from "drizzle-react";
+// import { LoadingContainer } from "drizzle-react-components";
+import LoadingContainer from "./components/LoadingContainer";
+import Loading from "./components/Loading";
+import DrizzleError from "./components/DrizzleError";
 import options from "./drizzleOptions";
-import Home from "./Home";
+import AppContainer from "./components/AppContainer";
+
+const drizzle = new Drizzle(options);
 
 function App() {
   return (
-    <DrizzleProvider options={options}>
+    <drizzleReactHooks.DrizzleProvider drizzle={drizzle}>
+      {/* <drizzleReactHooks.Initializer> */}
       <LoadingContainer>
-        <Home />
+        <AppContainer />
       </LoadingContainer>
-    </DrizzleProvider>
+      {/* </drizzleReactHooks.Initializer> */}
+    </drizzleReactHooks.DrizzleProvider>
   );
 }
 
