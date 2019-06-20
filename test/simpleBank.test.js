@@ -228,13 +228,13 @@ contract("SimpleBank", function(accounts) {
     await catchRevert(mybank.setInterestRate(5, { from: alice }));
   });
 
-  it("should set the mininum deposit", async () => {
+  it("should set the mininum balance", async () => {
     // by owner
-    await mybank.setMinDeposit(2, { from: owner });
-    const mindeposit = await mybank.minDepositUsd();
-    assert.equal(mindeposit, 2, "min deposit should match");
+    await mybank.setMinBalance(2, { from: owner });
+    const minbalance = await mybank.minBalanceUsd();
+    assert.equal(minbalance, 2, "min balance should match");
     // not owner
-    await catchRevert(mybank.setMinDeposit(10, { from: alice }));
+    await catchRevert(mybank.setMinBalance(10, { from: alice }));
   });
 
   // Write to lighthouse

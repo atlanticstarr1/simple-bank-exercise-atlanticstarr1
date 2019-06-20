@@ -3,6 +3,9 @@ import Lighthouse from "./contracts/Lighthouse.json";
 import SimpleBank from "./contracts/SimpleBank.json";
 
 const options = {
+  polls: {
+    accounts: 2000
+  },
   web3: {
     block: false,
     fallback: {

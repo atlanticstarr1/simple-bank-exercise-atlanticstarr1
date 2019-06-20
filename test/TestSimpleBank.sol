@@ -80,8 +80,8 @@ contract TestSimpleBank {
     
       // Check 'poke' function was called.
       // If called, minEth = tenCentsOfETH * 10 * minUsd
-      uint minEth = bank.minDepositEth(); // should be updated if searcher was set.
-      uint minUsd = bank.minDepositUsd();
+      uint minEth = bank.minBalanceEth(); // should be updated if searcher was set.
+      uint minUsd = bank.minBalanceUsd();
       uint expected = tenCentsOfETH * 10 * minUsd;
       Assert.equal(minEth, expected, "oracle didn't update contract. check poke() function.");
     }

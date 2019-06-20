@@ -17,8 +17,8 @@ const SmartContract = props => {
   }));
 
   const interestRate = useCacheCall("SimpleBank", "interestRate");
-  const minDepositEth = useCacheCall("SimpleBank", "minDepositEth");
-  const minDepositUsd = useCacheCall("SimpleBank", "minDepositUsd");
+  const minDepositEth = useCacheCall("SimpleBank", "minBalanceEth");
+  const minDepositUsd = useCacheCall("SimpleBank", "minBalanceUsd");
   const enrolled = useCacheCall("SimpleBank", "enrolled", drizzleState.account);
   const isOwner = useCacheCall("SimpleBank", "isOwner");
 

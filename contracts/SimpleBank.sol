@@ -16,9 +16,9 @@ contract SimpleBank is Ownable, Pausable, Searcher {
     // Bank interest rate
     uint public interestRate = 3;
     // Min balance required (USD) to start receiving interest payments.
-    uint public minDepositUsd = 1;
+    uint public minBalanceUsd = 1;
     // Eth equivalent of min balance.
-    uint public minDepositEth;
+    uint public minBalanceEth;
     // Total interest paid by bank to date
     uint private totalInterestPaid;
     // Are interest payments running?
@@ -156,15 +156,15 @@ contract SimpleBank is Ownable, Pausable, Searcher {
     }
 
     // set minimum deposit in USD
-    function setMinDeposit(uint _minDeposit) public onlyOwner {
-        require(_minDeposit > 0, "deposit should be greater than 0");
-        minDepositUsd = _minDeposit;
+    function setMinBalance(uint _minBalance) public onlyOwner {
+        require(_minBalance > 0, "balance should be greater than 0");
+        minBalanceUsd = _minBalance;
     }
 
     function startPayments() public onlyOwner whenNotPaused {
         if(!running){
         running = true;
-        emit InterestPaymentStarted(interestRate, minDepositUsd);
+        emit InterestPaymentStarted(interestRate, minBalanceUsd);
         }
     }
 
@@ -185,7 +185,7 @@ contract SimpleBank is Ownable, Pausable, Searcher {
                 emit DataNotValid();
                 return;
             }
-            minDepositEth = tenCents * 10 * minDepositUsd; // calculate 1 USD in Ether
+            minBalanceEth = tenCents * 10 * minBalanceUsd; // calculate 1 USD in Ether
             payInterest();
         }
     }
@@ -195,7 +195,7 @@ contract SimpleBank is Ownable, Pausable, Searcher {
         for (uint i = 0; i < accounts.length; i++) {
             address customerAddress = accounts[i];
             uint balance = balances[customerAddress]; // get customer balance in eth
-            if(balance != 0 && balance >= minDepositEth){ // customer is eligible to get interest payments
+            if(balance != 0 && balance >= minBalanceEth){ // customer is eligible to get interest payments
                 uint interest = (balance * interestRate).div(36500);
                 balances[customerAddress] = balances[customerAddress].add(interest);
                 totalInterestPaid += interest;
