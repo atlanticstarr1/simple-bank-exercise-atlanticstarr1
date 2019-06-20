@@ -161,14 +161,14 @@ contract SimpleBank is Ownable, Pausable, Searcher {
         minDepositUsd = _minDeposit;
     }
 
-    function startPayments() public onlyOwner {
+    function startPayments() public onlyOwner whenNotPaused {
         if(!running){
         running = true;
         emit InterestPaymentStarted(interestRate, minDepositUsd);
         }
     }
 
-    function stopPayments() public onlyOwner {
+    function stopPayments() public onlyOwner whenNotPaused {
         if(running){
         running = false;
         emit InterestPaymentStopped();

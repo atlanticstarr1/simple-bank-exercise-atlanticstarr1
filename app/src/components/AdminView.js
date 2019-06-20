@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { drizzleReactHooks } from "drizzle-react";
-import { Flex, Box, Text, Button, Form, Card, Pill, Input } from "rimble-ui";
+import { Flex, Box, Text, Button, Form, Card, Field, Input } from "rimble-ui";
 import ViewAccounts from "./ViewAccounts";
 import InterestPayment from "./InterestPayment";
 import PauseContract from "./PauseContract";
@@ -28,40 +28,25 @@ const AdminView = props => {
         <Text fontWeight={3} mb={3}>
           Interest and Minimum Balance
         </Text>
-        <Flex>
-          <Box p={1} width={1 / 2} bg="black">
-            <Button onClick={() => console.log("clicked")}>Set Interest</Button>
-          </Box>
-          <Box p={1} color="white" bg="salmon">
+        <Form onSubmit={() => console.log("submit")}>
+          <Form.Field label="Interest Rate" width={1}>
             <Form.Input
               type="number"
+              min="1"
+              max="6"
+              required
+              width={1}
               onChange={handleValidation}
-              placeholder="3"
-              value={interestRate}
+              defaultValue={interestRate}
             />
-          </Box>
-        </Flex>
-        <Flex>
-          <Box p={1} width={1 / 2} bg="black">
-            <Button onClick={() => console.log("clicked")}>
-              Set Mininum Deposit
-            </Button>
-          </Box>
-          <Box p={1} color="white" bg="salmon">
-            <Form.Input
-              type="number"
-              onChange={handleValidation}
-              placeholder="1 USD"
-              value={minDepositUsd}
-            />
-          </Box>
-        </Flex>
+          </Form.Field>
+          <Button type="submit" width={1}>
+            Change Rate
+          </Button>
+        </Form>
       </Card>
       <InterestPayment />
       <PauseContract />
-      <Card maxWidth={"640px"} px={4} mx={"auto"}>
-        <ViewAccounts />
-      </Card>
     </div>
   );
 };

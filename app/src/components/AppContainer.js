@@ -1,6 +1,6 @@
 import React from "react";
 import { drizzleReactHooks } from "drizzle-react";
-import { Box, Flex, Heading, Text, Card, Loader } from "rimble-ui";
+import { Box, Flex, Heading, Text, Card } from "rimble-ui";
 import Header from "./Header";
 import ConnectionBanner from "@rimble/connection-banner";
 import NetworkIndicator from "@rimble/network-indicator";
@@ -18,7 +18,6 @@ const AppContainer = props => {
   const mainAccount = drizzleState.accounts[0];
   const accountBalWei = drizzleState.accountBalances[mainAccount]; //in wei
 
-  console.log(drizzle);
   let accountBalEth =
     drizzle.web3.utils && drizzle.web3.utils.fromWei(accountBalWei, "ether");
 

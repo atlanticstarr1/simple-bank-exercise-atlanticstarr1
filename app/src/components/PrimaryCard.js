@@ -1,11 +1,7 @@
 import React from "react";
-import { Card } from "rimble-ui";
+import { Card, ToastMessage } from "rimble-ui";
 import AdminView from "./AdminView";
-
-import TransactionToastUtil from "../utils/TransactionToastUtil";
-
 import SmartContract from "./SmartContract";
-import TransactionsCard from "./TransactionsCard";
 
 const PrimaryCard = props => {
   return (
@@ -18,8 +14,7 @@ const PrimaryCard = props => {
         />
       </Card>
 
-      <TransactionsCard transactions={props.transactions} />
-      <TransactionToastUtil transactions={props.transactions} />
+      <ToastMessage.Provider ref={node => (window.toastProvider = node)} />
     </div>
   );
 };

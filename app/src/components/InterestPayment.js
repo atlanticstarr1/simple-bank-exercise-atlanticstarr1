@@ -1,62 +1,47 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { drizzleReactHooks } from "drizzle-react";
-import { Flex, Box, Text, Button, Card, Pill } from "rimble-ui";
+import { Box, Text, Button, Card, Pill, Heading } from "rimble-ui";
+import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const InterestPayment = () => {
   const { useCacheCall, useCacheSend } = drizzleReactHooks.useDrizzle();
-  const drizzleState = drizzleReactHooks.useDrizzleState(drizzleState => ({
-    account: drizzleState.accounts[0]
-  }));
-  const startPayment = useCacheSend("SimpleBank", "startPayments");
-  const stopPayment = useCacheSend("SimpleBank", "stopPayments");
+  const start = useCacheSend("SimpleBank", "startPayments");
+  const stop = useCacheSend("SimpleBank", "stopPayments");
   const payingInterest = useCacheCall("SimpleBank", "running");
 
-  // start interest payments
-  const startInterest = () => {
-    const { send, TXObjects } = startPayment;
-    send();
+  const toggleInterest = () => {
+    payingInterest ? stop.send() : start.send();
   };
 
-  // stop interest payments
-  const stopInterest = () => {
-    const { send, TXObjects } = stopPayment;
-    send();
-  };
+  useEffect(() => {
+    if (start.status) {
+      showTransactionToast(start.status);
+    }
+  }, [start.TXObjects.length, start.status]);
+
+  useEffect(() => {
+    if (stop.status) {
+      showTransactionToast(stop.status);
+    }
+  }, [stop.TXObjects.length, stop.status]);
 
   return (
-    <Card maxWidth={"640px"} px={4} mx={"auto"}>
-      <Text fontWeight={3} my={3}>
-        Interest Payments
-      </Text>
-      <Flex alignItems={"flex-start"} pb={3}>
-        <Box>
-          <Pill color={payingInterest ? "green" : "danger"}>
-            {payingInterest ? "PAYING" : "NOT PAYING"}
-          </Pill>
-          <Text fontSize={1} color="mid-gray">
-            Total Interest Paid: {5} ETH
-          </Text>
-        </Box>
-      </Flex>
-      <Flex flexDirection={"row"}>
-        <Button
-          variant="success"
-          size="small"
-          onClick={startInterest}
-          mr={1}
-          disabled={payingInterest}
-        >
-          START Payments
-        </Button>
-        <Button.Outline
-          variant="danger"
-          size="small"
-          onClick={stopInterest}
-          disabled={!payingInterest}
-        >
-          STOP Payments
-        </Button.Outline>
-      </Flex>
+    <Card width={"450px"} mx={"auto"} px={4}>
+      <Heading>Interest Payments</Heading>
+      <Box>
+        <Text mb={3}>START or STOP paying interest to customers.</Text>
+        <Pill mb={3} color={payingInterest ? "green" : "danger"}>
+          {payingInterest ? "PAYING" : "NOT PAYING"}
+        </Pill>
+      </Box>
+
+      <Button
+        variant={payingInterest ? "danger" : "success"}
+        onClick={toggleInterest}
+        width={1 / 2}
+      >
+        {payingInterest ? "Stop Payments" : "Start Payments"}
+      </Button>
     </Card>
   );
 };

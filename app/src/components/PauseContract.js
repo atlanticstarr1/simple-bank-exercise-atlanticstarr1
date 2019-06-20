@@ -1,59 +1,46 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { drizzleReactHooks } from "drizzle-react";
-import { Flex, Box, Text, Button, Card, Pill } from "rimble-ui";
+import { Heading, Box, Text, Button, Card, Pill } from "rimble-ui";
+import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const PauseContract = () => {
   const { useCacheCall, useCacheSend } = drizzleReactHooks.useDrizzle();
-  const drizzleState = drizzleReactHooks.useDrizzleState(drizzleState => ({
-    account: drizzleState.accounts[0]
-  }));
   const pause = useCacheSend("SimpleBank", "pause");
   const unpause = useCacheSend("SimpleBank", "unpause");
   const paused = useCacheCall("SimpleBank", "paused");
 
-  // pause the contract
-  const pauseContract = () => {
-    const { send, TXObjects } = pause;
-    send();
+  const togglePauseContract = () => {
+    paused ? unpause.send() : pause.send();
   };
 
-  // unpause the contract
-  const unpauseContract = () => {
-    const { send, TXObjects } = unpause;
-    send();
-  };
+  useEffect(() => {
+    if (pause.status) {
+      showTransactionToast(pause.status);
+    }
+  }, [pause.TXObjects.length, pause.status]);
+
+  useEffect(() => {
+    if (unpause.status) {
+      showTransactionToast(unpause.status);
+    }
+  }, [unpause.TXObjects.length, unpause.status]);
 
   return (
-    <Card maxWidth={"640px"} px={4} mx={"auto"}>
-      <Text fontWeight={3} my={3}>
-        Pause Contract
-      </Text>
-      <Flex alignItems={"flex-start"} pb={3}>
-        <Box>
-          <Pill color={paused ? "danger" : "green"}>
-            {paused ? "CONTRACT PAUSED" : "CONTRACT NOT PAUSED"}
-          </Pill>
-        </Box>
-      </Flex>
-      <Flex flexDirection={"row"}>
-        <Button
-          variant="danger"
-          size="small"
-          onClick={pauseContract}
-          mr={1}
-          disabled={paused}
-        >
-          PAUSE CONTRACT
-        </Button>
-        <Button.Outline
-          variant="green"
-          size="small"
-          onClick={unpauseContract}
-          disabled={!paused}
-        >
-          UNPAUSE CONTRACT
-        </Button.Outline>
-      </Flex>
+    <Card width={"450px"} mx={"auto"} px={4}>
+      <Heading>Circuit Breaker</Heading>
+      <Box>
+        <Text mb={3}>Pause enrollment, deposits and interest payments.</Text>
+        <Pill mb={3} color={paused ? "danger" : "green"}>
+          {paused ? "PAUSED" : "UNPAUSED"}
+        </Pill>
+      </Box>
+
+      <Button
+        variant={paused ? "success" : "danger"}
+        onClick={togglePauseContract}
+      >
+        {paused ? "Unpause Contract" : "Pause Contract"}
+      </Button>
     </Card>
   );
 };
