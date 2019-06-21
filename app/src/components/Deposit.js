@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { drizzleReactHooks } from "drizzle-react";
-import { Flex, Button, Card, Form } from "rimble-ui";
+import { Flex, Button, Card, Form, Heading, Box, Text } from "rimble-ui";
 import useAccount from "../utils/Account";
 import { showTransactionToast } from "../utils/TransactionToastUtil";
 
@@ -30,9 +30,13 @@ const Deposit = props => {
 
   return (
     <Card maxWidth={"450px"} px={4} mx={"auto"}>
+      <Heading.h4>Deposit</Heading.h4>
+      <Box>
+        <Text mb={4}>Send some ether (ETH) to your bank account.</Text>
+      </Box>
       <Form onSubmit={handleSubmit}>
         <Flex flexDirection="column">
-          <Form.Field label="Amount (ETH)">
+          <Form.Field label="Amount">
             <Form.Input
               type="number"
               step="any"
