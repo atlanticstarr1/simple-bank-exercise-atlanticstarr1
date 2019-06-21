@@ -26,19 +26,19 @@ const EditInterestRate = ({ rate }) => {
   }, [setRate.TXObjects.length, setRate.status]);
 
   return (
-    <Form onSubmit={handleSubmit} w={1}>
+    <Form onSubmit={handleSubmit}>
       <Flex>
-        <Box p={2} w={1 / 2} alignSelf="center" mt={12}>
-          <Button type="submit">Change Rate</Button>
+        <Box alignSelf="center" mt={12} flex="1">
+          <Button type="submit">Change rate</Button>
         </Box>
-        <Box p={2} width={1 / 2}>
+        <Box flex="1">
           <Form.Field label="Interest Rate (%)">
             <Form.Input
               type="number"
               min="1"
               max="6"
-              required
               width={1}
+              required
               onChange={handleChange}
               value={interest}
             />

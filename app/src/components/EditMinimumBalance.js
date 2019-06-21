@@ -9,14 +9,12 @@ const EditMinimumBalance = ({ balance }) => {
   const setBalance = useCacheSend("SimpleBank", "setMinBalance");
 
   const handleChange = e => {
-    // handle form validation
     e.target.parentNode.classList.add("was-validated");
     setMinBalance(e.target.value);
   };
 
   const handleSubmit = e => {
     e.preventDefault();
-    // write to contract
     setBalance.send(minBalance);
   };
 
@@ -27,12 +25,12 @@ const EditMinimumBalance = ({ balance }) => {
   }, [setBalance.TXObjects.length, setBalance.status]);
 
   return (
-    <Form onSubmit={handleSubmit} w={1}>
+    <Form onSubmit={handleSubmit}>
       <Flex>
-        <Box p={2} w={1 / 2} alignSelf="center" mt={12}>
-          <Button type="submit">Change Balance</Button>
+        <Box alignSelf="center" mt={12} flex="1">
+          <Button type="submit">Change balance</Button>
         </Box>
-        <Box p={2} width={1 / 2}>
+        <Box flex="1">
           <Form.Field label="Minimum Balance (USD)">
             <Form.Input
               type="number"

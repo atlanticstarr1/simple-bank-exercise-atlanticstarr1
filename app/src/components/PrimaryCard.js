@@ -1,20 +1,32 @@
 import React from "react";
-import { Card, ToastMessage } from "rimble-ui";
+import { drizzleReactHooks } from "drizzle-react";
 import AdminView from "./AdminView";
 import SmartContract from "./SmartContract";
+import EnrollAccount from "./EnrollAccount";
+import Deposit from "./Deposit";
 
 const PrimaryCard = props => {
+  const drizzleState = drizzleReactHooks.useDrizzleState(drizzleState => ({
+    account: drizzleState.accounts[0]
+  }));
+  const { account } = drizzleState;
+
+  const { useCacheCall } = drizzleReactHooks.useDrizzle();
+  const enrolled = useCacheCall("SimpleBank", "enrolled", account);
+  const isOwner = useCacheCall("SimpleBank", "isOwner");
+
+  if (!enrolled) {
+    return <EnrollAccount />;
+  }
+
   return (
     <div>
-      <AdminView />
-      <Card maxWidth={"640px"} px={4} mx={"auto"}>
-        <SmartContract
-          account={props.account}
-          transactions={props.transactions}
-        />
-      </Card>
-
-      <ToastMessage.Provider ref={node => (window.toastProvider = node)} />
+      {isOwner && <AdminView />}
+      {/* <SmartContract
+        account={props.account}
+        transactions={props.transactions}
+      /> */}
+      <Deposit />
     </div>
   );
 };

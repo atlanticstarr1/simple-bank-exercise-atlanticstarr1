@@ -8,21 +8,15 @@ const EditContract = () => {
   const { useCacheCall } = drizzleReactHooks.useDrizzle();
 
   const interestRate = useCacheCall("SimpleBank", "interestRate");
-  const minBalanceEth = useCacheCall("SimpleBank", "minBalanceEth");
   const minBalanceUsd = useCacheCall("SimpleBank", "minBalanceUsd");
 
   return (
-    <Card maxWidth={"640px"} px={4} mx={"auto"}>
-      <Heading>Interest Rate and Minimum Balance</Heading>
+    <Card maxWidth={"450px"} px={4} mx={"auto"}>
+      <Heading.h4>Interest Rate and Minimum Balance</Heading.h4>
       <Box>
-        <Text mb={3}>Change bank's interest rate and minimum balance</Text>
+        <Text mb={4}>Change bank's interest rate and minimum balance</Text>
       </Box>
-      <Box>
-        <Text>Interest Rate: {interestRate}</Text>
-        <Text mb={3}>
-          Min Balance: {minBalanceUsd} USD ( ~ {minBalanceEth} ETH)
-        </Text>
-      </Box>
+      <Box />
       {interestRate && <EditInterestRate rate={interestRate} />}
       {minBalanceUsd && <EditMinimumBalance balance={minBalanceUsd} />}
     </Card>

@@ -1,27 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { drizzleReactHooks } from "drizzle-react";
-import { Flex, Box, Button, Form } from "rimble-ui";
+import { Flex, Box, Button, Form, Card, Heading, Text, Flash } from "rimble-ui";
 import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const WriteToOracle = () => {
-  const [ethprice, setEthPrice] = useState(0);
-
+  const [price, setPrice] = useState(0);
   const { useCacheSend, useCacheCall } = drizzleReactHooks.useDrizzle();
   const setData = useCacheSend("Lighthouse", "write");
   const tencenteth = useCacheCall("Lighthouse", "peekData");
 
   const handleChange = e => {
-    // handle form validation
     e.target.parentNode.classList.add("was-validated");
-    setEthPrice(e.target.value);
+    setPrice(e.target.value);
   };
 
   const handleSubmit = e => {
     e.preventDefault();
-    // get random number bet 0 and 1000
     const nonce = Math.floor(Math.random() * 1000);
-    // write to contract
-    setData.send(ethprice, nonce);
+    setData.send(price, nonce);
   };
 
   useEffect(() => {
@@ -30,28 +26,41 @@ const WriteToOracle = () => {
     }
   }, [setData.TXObjects.length, setData.status]);
 
+  useEffect(() => {
+    if (tencenteth) {
+      setPrice(tencenteth.v);
+    }
+  }, [tencenteth]);
+
   return (
-    <Form onSubmit={handleSubmit} w={1}>
-      <Flex>
-        {tencenteth && <Box>Rate: {tencenteth.v}</Box>}
-        {tencenteth && !tencenteth.b && <Box>Error in reading rate</Box>}
-        <Box p={2} w={1 / 2} alignSelf="center" mt={12}>
-          <Button type="submit">Update Price</Button>
-        </Box>
-        <Box p={2} width={1 / 2}>
-          <Form.Field label="10 Cents in ETH">
-            <Form.Input
-              type="number"
-              min="1"
-              required
-              width={1}
-              onChange={handleChange}
-              value={ethprice}
-            />
-          </Form.Field>
-        </Box>
-      </Flex>
-    </Form>
+    <Card maxWidth={"450px"} px={4} mx={"auto"}>
+      <Heading>Oracle</Heading>
+      <Box>
+        <Text mb={3}>Ten cents (USD) worth of ETH.</Text>
+      </Box>
+      <Form onSubmit={handleSubmit}>
+        <Flex>
+          <Box alignSelf="center" mt={12} flex="1">
+            <Button type="submit">Update price</Button>
+          </Box>
+          <Box flex="1">
+            <Form.Field label="Price (wei)">
+              <Form.Input
+                type="number"
+                min="1"
+                required
+                width={1}
+                onChange={handleChange}
+                value={price}
+              />
+            </Form.Field>
+          </Box>
+        </Flex>
+      </Form>
+      <Flash variant={tencenteth && tencenteth.b ? "info" : "danger"}>
+        Current price: <b>{tencenteth && tencenteth.v}</b> wei
+      </Flash>
+    </Card>
   );
 };
 

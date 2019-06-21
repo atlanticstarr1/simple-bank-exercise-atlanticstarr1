@@ -1,6 +1,6 @@
 import React from "react";
 import { drizzleReactHooks } from "drizzle-react";
-import { Box, Flex, Heading, Text, Card } from "rimble-ui";
+import { Box, Flex, Heading, Text, Card, ToastMessage } from "rimble-ui";
 import Header from "./Header";
 import ConnectionBanner from "@rimble/connection-banner";
 import NetworkIndicator from "@rimble/network-indicator";
@@ -55,6 +55,7 @@ const AppContainer = props => {
         accountBalanceLow={accountBalEth < 1}
       />
       <PrimaryCard />
+      <ToastMessage.Provider ref={node => (window.toastProvider = node)} />
     </Box>
   );
 };
