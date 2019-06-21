@@ -57,7 +57,7 @@ const WriteToOracle = () => {
           </Box>
         </Flex>
       </Form>
-      <Flash variant={tencenteth && tencenteth.b ? "info" : "danger"}>
+      <Flash variant="info">
         Current price: <b>{tencenteth && tencenteth.v}</b> wei
       </Flash>
     </Card>

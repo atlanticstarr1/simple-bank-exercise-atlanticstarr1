@@ -4,6 +4,7 @@ import AdminView from "./AdminView";
 import SmartContract from "./SmartContract";
 import EnrollAccount from "./EnrollAccount";
 import Deposit from "./Deposit";
+import Withdraw from "./Withdraw";
 
 const PrimaryCard = props => {
   const drizzleState = drizzleReactHooks.useDrizzleState(drizzleState => ({
@@ -27,6 +28,7 @@ const PrimaryCard = props => {
         transactions={props.transactions}
       /> */}
       <Deposit />
+      <Withdraw />
     </div>
   );
 };

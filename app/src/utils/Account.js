@@ -14,4 +14,16 @@ const useAccount = () => {
   return { account, accountBalWei, accountBalEth };
 };
 
-export default useAccount;
+const usefromWei = (value, unit) => {
+  const { drizzle } = drizzleReactHooks.useDrizzle();
+  const result = drizzle.web3.utils.fromWei(value, unit);
+  return result;
+};
+
+const usetoWei = (value, unit) => {
+  const { drizzle } = drizzleReactHooks.useDrizzle();
+  const result = drizzle.web3.utils.toWei(value, unit);
+  return result;
+};
+
+export { useAccount, usefromWei, usetoWei };

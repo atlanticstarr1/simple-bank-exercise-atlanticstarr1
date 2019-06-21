@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { drizzleReactHooks } from "drizzle-react";
 import { Flex, Button, Card, Form, Heading, Box, Text } from "rimble-ui";
-import useAccount from "../utils/Account";
+import { useAccount } from "../utils/Account";
 import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const Deposit = props => {
