@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { drizzleReactHooks } from "drizzle-react";
 //import useAccount from "../utils/useAccount";
 
@@ -5,7 +6,8 @@ const useBankContract = () => {
   const {
     drizzle,
     useCacheSend,
-    useCacheCall
+    useCacheCall,
+    useCacheEvents
   } = drizzleReactHooks.useDrizzle();
 
   const drizzleState = drizzleReactHooks.useDrizzleState(
@@ -14,6 +16,21 @@ const useBankContract = () => {
 
   const web3 = drizzle.web3;
   const account = drizzleState && drizzleState.accounts[0];
+  const transactions = drizzleState && drizzleState.transactions;
+
+  const interestPaid = useCacheEvents(
+    "SimpleBank",
+    "InterestPaid",
+    // Use memoization to only recreate listener when account changes.
+    useMemo(
+      () => ({
+        filter: { from: account },
+        fromBlock: 0
+      }),
+      [account]
+    )
+  );
+
   const accountBalWei = drizzleState.accountBalances[account];
 
   let accountBalEth = drizzle.web3.utils.fromWei(accountBalWei, "ether");
@@ -76,6 +93,8 @@ const useBankContract = () => {
 
   return {
     web3,
+    interestPaid,
+    transactions,
     account,
     accountBalEth,
     isEnrolled,

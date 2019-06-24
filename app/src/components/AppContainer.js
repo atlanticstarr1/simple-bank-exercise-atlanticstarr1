@@ -7,7 +7,6 @@ import {
   ToastMessage,
   MetaMaskButton
 } from "rimble-ui";
-import Header from "./Header";
 import ConnectWallet from "./ConnectWallet";
 
 const AppContainer = () => {

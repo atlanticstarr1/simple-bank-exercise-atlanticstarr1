@@ -5,7 +5,12 @@ import { Flex, Box, Text, Icon } from "rimble-ui";
 
 const ShowBankBalance = () => {
   const [balanceEth, setBalanceEth] = useState(0);
-  const { account, minBalanceEth, minBalanceUsd } = useBankContract();
+  const {
+    bankBalanceEth,
+    account,
+    minBalanceEth,
+    minBalanceUsd
+  } = useBankContract();
   const { drizzle, useCacheCall } = drizzleReactHooks.useDrizzle();
 
   // todo: check on drizzle's latest release to reuse useCacheCall
@@ -27,7 +32,8 @@ const ShowBankBalance = () => {
     return () => {
       console.log("cleaning up");
     };
-  }, [getBalance]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, bankBalanceEth]);
 
   // calculate usd equivalent
   const oneUsdInEther = minBalanceEth / minBalanceUsd;

@@ -6,7 +6,9 @@ const options = {
   polls: {
     accounts: 3000
   },
-
+  events: {
+    SimpleBank: ["InterestPaid"]
+  },
   web3: {
     block: false,
     fallback: {
