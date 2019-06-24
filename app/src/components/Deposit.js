@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { drizzleReactHooks } from "drizzle-react";
-import { Flex, Button, Card, Form, Heading, Box, Text } from "rimble-ui";
-import { useAccount } from "../utils/Account";
+import { Flex, Button, Form } from "rimble-ui";
+import useBankContract from "../utils/useBankContract";
 import { showTransactionToast } from "../utils/TransactionToastUtil";
 
-const Deposit = props => {
+const Deposit = () => {
   const [depositAmount, setDepositAmount] = useState(0);
-  const { useCacheSend } = drizzleReactHooks.useDrizzle();
-  const deposit = useCacheSend("SimpleBank", "deposit");
-  const { accountBalEth } = useAccount();
-  const { drizzle } = drizzleReactHooks.useDrizzle();
+  const { account, accountBalEth, deposit } = useBankContract();
 
   const handleChange = e => {
     e.target.parentNode.classList.add("was-validated");
@@ -18,8 +14,8 @@ const Deposit = props => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    const weiValue = drizzle.web3.utils.toWei(depositAmount, "ether");
-    deposit.send({ value: weiValue });
+    const weiValue = depositAmount * 1e18;
+    deposit.send({ from: account, value: weiValue });
   };
 
   useEffect(() => {
@@ -29,14 +25,10 @@ const Deposit = props => {
   }, [deposit.TXObjects.length, deposit.status]);
 
   return (
-    <Card maxWidth={"450px"} px={4} mx={"auto"}>
-      <Heading.h4>Deposit</Heading.h4>
-      <Box>
-        <Text mb={4}>Send some ether (ETH) to your bank account.</Text>
-      </Box>
+    <div>
       <Form onSubmit={handleSubmit}>
         <Flex flexDirection="column">
-          <Form.Field label="Amount">
+          <Form.Field label="Amount (ETH)">
             <Form.Input
               type="number"
               step="any"
@@ -46,12 +38,13 @@ const Deposit = props => {
               required
               onChange={handleChange}
               value={depositAmount}
+              title="Enter amount of ETH to deposit"
             />
           </Form.Field>
           <Button type="submit">Deposit</Button>
         </Flex>
       </Form>
-    </Card>
+    </div>
   );
 };
 

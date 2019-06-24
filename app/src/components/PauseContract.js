@@ -1,45 +1,39 @@
 import React, { useEffect } from "react";
-import { drizzleReactHooks } from "drizzle-react";
 import { Heading, Box, Text, Button, Card, Pill } from "rimble-ui";
+import useBankContract from "../utils/useBankContract";
 import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const PauseContract = () => {
-  const { useCacheCall, useCacheSend } = drizzleReactHooks.useDrizzle();
-  const pause = useCacheSend("SimpleBank", "pause");
-  const unpause = useCacheSend("SimpleBank", "unpause");
-  const paused = useCacheCall("SimpleBank", "paused");
+  const { isPaused, pauseContract, unpauseContract } = useBankContract();
 
   const togglePauseContract = () => {
-    paused ? unpause.send() : pause.send();
+    isPaused ? unpauseContract.send() : pauseContract.send();
   };
 
   useEffect(() => {
-    if (pause.status) {
-      showTransactionToast(pause.status);
+    if (pauseContract.status) {
+      showTransactionToast(pauseContract.status);
     }
-  }, [pause.TXObjects.length, pause.status]);
+  }, [pauseContract.TXObjects.length, pauseContract.status]);
 
   useEffect(() => {
-    if (unpause.status) {
-      showTransactionToast(unpause.status);
+    if (unpauseContract.status) {
+      showTransactionToast(unpauseContract.status);
     }
-  }, [unpause.TXObjects.length, unpause.status]);
+  }, [unpauseContract.TXObjects.length, unpauseContract.status]);
 
   return (
     <Card width={"450px"} mx={"auto"} px={4}>
-      <Heading>Circuit Breaker</Heading>
+      <Heading.h4>Circuit Breaker</Heading.h4>
       <Box>
         <Text mb={3}>Pause enrollment, deposits and interest payments.</Text>
-        <Pill mb={3} color={paused ? "danger" : "green"}>
-          {paused ? "PAUSED" : "UNPAUSED"}
+        <Pill mb={3} color={isPaused ? "danger" : "green"}>
+          {isPaused ? "PAUSED" : "UNPAUSED"}
         </Pill>
       </Box>
 
-      <Button
-        variant={paused ? "success" : "danger"}
-        onClick={togglePauseContract}
-      >
-        {paused ? "Unpause Contract" : "Pause Contract"}
+      <Button variant={!isPaused && "danger"} onClick={togglePauseContract}>
+        {isPaused ? "Unpause Contract" : "Pause Contract"}
       </Button>
     </Card>
   );

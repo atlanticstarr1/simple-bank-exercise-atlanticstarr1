@@ -1,35 +1,24 @@
-import React, { Component } from "react";
-import { Card, Text, Button } from "rimble-ui";
+import React from "react";
+import { Card, Icon, Flex, Box, Heading } from "rimble-ui";
 
 import AccountOverview from "./AccountOverview";
 
 const WalletBlock = props => {
-  const handleConnectAccount = () => {};
-
-  const renderContent = () => {
-    if (props.account) {
-      return (
-        <AccountOverview
-          account={props.account}
-          accountBalanceLow={props.accountBalanceLow}
-          accountBalance={props.accountBalance}
-        />
-      );
-    } else {
-      return (
-        <Button onClick={() => handleConnectAccount()} width={1}>
-          Connect your wallet
-        </Button>
-      );
-    }
-  };
-
   return (
     <Card maxWidth={"640px"} mx={"auto"} p={4}>
-      <Text fontWeight={3} mb={3}>
-        Wallet:
-      </Text>
-      {renderContent()}
+      <Flex>
+        <Box mb={3} flex={1 / 4}>
+          <Icon color="tomato" name="AccountBalanceWallet" size="80" />
+        </Box>
+        <Box my={3} flex={1}>
+          <Heading.h4>Wallet</Heading.h4>
+        </Box>
+      </Flex>
+      <AccountOverview
+        account={props.account}
+        accountBalanceLow={props.accountBalanceLow}
+        accountBalance={props.accountBalance}
+      />
     </Card>
   );
 };

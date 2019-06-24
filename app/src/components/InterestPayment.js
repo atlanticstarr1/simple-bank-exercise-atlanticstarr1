@@ -1,42 +1,46 @@
 import React, { useEffect } from "react";
-import { drizzleReactHooks } from "drizzle-react";
 import { Box, Text, Button, Card, Pill, Heading } from "rimble-ui";
+import useBankContract from "../utils/useBankContract";
 import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const InterestPayment = () => {
-  const { useCacheCall, useCacheSend } = drizzleReactHooks.useDrizzle();
-  const start = useCacheSend("SimpleBank", "startPayments");
-  const stop = useCacheSend("SimpleBank", "stopPayments");
-  const payingInterest = useCacheCall("SimpleBank", "running");
+  const {
+    account,
+    startInterest,
+    stopInterest,
+    payingInterest
+  } = useBankContract();
 
   const toggleInterest = () => {
-    payingInterest ? stop.send() : start.send();
+    payingInterest
+      ? stopInterest.send({ from: account })
+      : startInterest.send({ from: account });
   };
 
   useEffect(() => {
-    if (start.status) {
-      showTransactionToast(start.status);
+    if (startInterest.status) {
+      showTransactionToast(startInterest.status);
     }
-  }, [start.TXObjects.length, start.status]);
+  }, [startInterest.TXObjects.length, startInterest.status]);
 
   useEffect(() => {
-    if (stop.status) {
-      showTransactionToast(stop.status);
+    if (stopInterest.status) {
+      showTransactionToast(stopInterest.status);
     }
-  }, [stop.TXObjects.length, stop.status]);
+  }, [stopInterest.TXObjects.length, stopInterest.status]);
 
   return (
     <Card width={"450px"} mx={"auto"} px={4}>
-      <Heading>Interest Payments</Heading>
+      <Heading.h4>Interest Payments</Heading.h4>
       <Box>
-        <Text mb={3}>START or STOP paying interest to customers.</Text>
+        <Text mb={3}>Start or stop paying interest to customers.</Text>
         <Pill mb={3} color={payingInterest ? "green" : "danger"}>
           {payingInterest ? "PAYING" : "NOT PAYING"}
         </Pill>
       </Box>
 
       <Button
-        variant={payingInterest ? "danger" : "success"}
+        variant={payingInterest && "danger"}
         onClick={toggleInterest}
         width={1 / 2}
       >

@@ -4,8 +4,9 @@ import SimpleBank from "./contracts/SimpleBank.json";
 
 const options = {
   polls: {
-    accounts: 2000
+    accounts: 3000
   },
+
   web3: {
     block: false,
     fallback: {

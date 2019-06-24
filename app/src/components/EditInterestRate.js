@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { drizzleReactHooks } from "drizzle-react";
 import { Flex, Box, Button, Form } from "rimble-ui";
+import useBankContract from "../utils/useBankContract";
 import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const EditInterestRate = ({ rate }) => {
   const [interest, setInterest] = useState(rate);
-  const { useCacheSend } = drizzleReactHooks.useDrizzle();
-  const setRate = useCacheSend("SimpleBank", "setInterestRate");
+  const { setInterestRate } = useBankContract();
 
   const handleChange = e => {
     // handle validation
@@ -16,34 +15,30 @@ const EditInterestRate = ({ rate }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    setRate.send(interest);
+    setInterestRate.send(interest);
   };
 
   useEffect(() => {
-    if (setRate.status) {
-      showTransactionToast(setRate.status);
+    if (setInterestRate.status) {
+      showTransactionToast(setInterestRate.status);
     }
-  }, [setRate.TXObjects.length, setRate.status]);
+  }, [setInterestRate.TXObjects.length, setInterestRate.status]);
 
   return (
     <Form onSubmit={handleSubmit}>
-      <Flex>
-        <Box alignSelf="center" mt={12} flex="1">
-          <Button type="submit">Change rate</Button>
-        </Box>
-        <Box flex="1">
-          <Form.Field label="Interest Rate (%)">
-            <Form.Input
-              type="number"
-              min="1"
-              max="6"
-              width={1}
-              required
-              onChange={handleChange}
-              value={interest}
-            />
-          </Form.Field>
-        </Box>
+      <Flex flexDirection="column">
+        <Form.Field label="Interest Rate (%)">
+          <Form.Input
+            type="number"
+            min="1"
+            max="6"
+            width={1}
+            required
+            onChange={handleChange}
+            value={interest}
+          />
+        </Form.Field>
+        <Button type="submit">Change rate</Button>
       </Flex>
     </Form>
   );

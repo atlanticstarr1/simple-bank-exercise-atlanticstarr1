@@ -1,6 +1,5 @@
 import React from "react";
-import { Box, Flex, Text, Loader } from "rimble-ui";
-import ConnectionBanner from "@rimble/connection-banner";
+import { Box, Flex, Text, Loader, Flash } from "rimble-ui";
 
 const LoadStatus = ({ message }) => (
   <Box
@@ -24,20 +23,14 @@ const LoadStatus = ({ message }) => (
   </Box>
 );
 
-const Loading = props => {
-  if (props.drizzleStatus.initialized)
-    // Load the dapp.
-    return props.children;
-
-  if (props.web3.status === "initialized")
-    return <LoadStatus message="Loading contracts and accounts" />;
-
-  if (props.web3.status === "failed")
-    return (
-      <Box maxWidth={"640px"} mx={"auto"} p={3}>
-        <ConnectionBanner />
-      </Box>
-    );
+const LoadError = () => {
+  return (
+    <Flash my={3} variant="danger">
+      This browser has no connection to the Ethereum network. Please use the
+      Chrome/FireFox extension MetaMask, or dedicated Ethereum browsers Mist or
+      Parity.
+    </Flash>
+  );
 };
 
-export default Loading;
+export { LoadStatus, LoadError };

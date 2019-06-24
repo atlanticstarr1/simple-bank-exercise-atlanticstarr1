@@ -2,7 +2,7 @@ import React from "react";
 import InterestPayment from "./InterestPayment";
 import PauseContract from "./PauseContract";
 import EditContract from "./EditContract";
-import WriteToOracle from "./WriteToOracle";
+import Oracle from "./Oracle";
 
 const AdminView = props => {
   return (
@@ -10,7 +10,7 @@ const AdminView = props => {
       <EditContract />
       <InterestPayment />
       <PauseContract />
-      <WriteToOracle />
+      <Oracle />
     </div>
   );
 };

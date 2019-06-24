@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { drizzleReactHooks } from "drizzle-react";
-import { Flex, Box, Button, Form, Card, Heading, Text, Flash } from "rimble-ui";
+import { Flex, Box, Button, Form, Card, Heading, Text } from "rimble-ui";
+import useOracle from "../utils/useOracle";
 import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const WriteToOracle = () => {
-  const [price, setPrice] = useState(0);
-  const { useCacheSend, useCacheCall } = drizzleReactHooks.useDrizzle();
-  const setData = useCacheSend("Lighthouse", "write");
-  const tencenteth = useCacheCall("Lighthouse", "peekData");
+  const [price, setPrice] = useState(340000000000000);
+  const { value, write } = useOracle();
 
   const handleChange = e => {
     e.target.parentNode.classList.add("was-validated");
@@ -17,50 +15,63 @@ const WriteToOracle = () => {
   const handleSubmit = e => {
     e.preventDefault();
     const nonce = Math.floor(Math.random() * 1000);
-    setData.send(price, nonce);
+    write.send(price, nonce);
   };
 
   useEffect(() => {
-    if (setData.status) {
-      showTransactionToast(setData.status);
+    if (write.status) {
+      showTransactionToast(write.status);
     }
-  }, [setData.TXObjects.length, setData.status]);
+  }, [write.TXObjects.length, write.status]);
 
   useEffect(() => {
-    if (tencenteth) {
-      setPrice(tencenteth.v);
-    }
-  }, [tencenteth]);
+    setPrice(value);
+  }, [value]);
 
+  // START OF DEMO
+  // DEMO PURPOSES ONLY - THE ORACLE WILL UPDATE ITS DATA ONCE PER 30 SECONDS. IN REALITY
+  // THIS WILL BE A DAY
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const nonce = Math.floor(Math.random() * 1000);
+      write.send(price, nonce);
+    }, 20000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // END OF DEMO
+
+  const ethprice = parseFloat(value / 1e18).toFixed(5);
   return (
-    <Card maxWidth={"450px"} px={4} mx={"auto"}>
-      <Heading>Oracle</Heading>
+    <div>
       <Box>
-        <Text mb={3}>Ten cents (USD) worth of ETH.</Text>
+        <Text>Ten cents (USD) worth of Ether.</Text>
+      </Box>
+      <Box my={3}>
+        <Text fontSize={"1.5rem"} fontWeight={1} textAlign={"center"}>
+          {value} wei
+        </Text>
+        <Text textAlign={"center"}>(~{ethprice} ETH)</Text>
       </Box>
       <Form onSubmit={handleSubmit}>
-        <Flex>
-          <Box alignSelf="center" mt={12} flex="1">
-            <Button type="submit">Update price</Button>
-          </Box>
-          <Box flex="1">
-            <Form.Field label="Price (wei)">
-              <Form.Input
-                type="number"
-                min="1"
-                required
-                width={1}
-                onChange={handleChange}
-                value={price}
-              />
-            </Form.Field>
-          </Box>
+        <Flex flexDirection="column">
+          <Form.Field label="Price (wei)">
+            <Form.Input
+              type="number"
+              step="any"
+              min="1"
+              max={1e18}
+              required
+              width={1}
+              onChange={handleChange}
+              value={price}
+            />
+          </Form.Field>
+          <Button type="submit">Update price</Button>
         </Flex>
       </Form>
-      <Flash variant="info">
-        Current price: <b>{tencenteth && tencenteth.v}</b> wei
-      </Flash>
-    </Card>
+    </div>
   );
 };
 

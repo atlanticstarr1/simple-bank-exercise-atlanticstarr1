@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex, Box, Text, Blockie, QR, PublicAddress } from "rimble-ui";
+import { Flex, Box, Text, QR, PublicAddress } from "rimble-ui";
 
 const AccountOverview = props => {
   const trimEth = eth => {

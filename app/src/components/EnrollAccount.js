@@ -1,21 +1,20 @@
 import React, { useEffect } from "react";
-import { drizzleReactHooks } from "drizzle-react";
-import { Heading, Box, Text, Button, Card, Blockie } from "rimble-ui";
+import { Heading, Box, Text, Button, Card } from "rimble-ui";
+import useBankContract from "../utils/useBankContract";
 import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const EnrollAccount = () => {
-  const { useCacheSend } = drizzleReactHooks.useDrizzle();
-  const enroll = useCacheSend("SimpleBank", "enroll");
+  const { account, enrollAccount } = useBankContract();
 
-  const enrollAccount = () => {
-    enroll.send();
+  const handleEnroll = () => {
+    enrollAccount.send({ from: account });
   };
 
   useEffect(() => {
-    if (enroll.status) {
-      showTransactionToast(enroll.status);
+    if (enrollAccount.status) {
+      showTransactionToast(enrollAccount.status);
     }
-  }, [enroll.TXObjects.length, enroll.status]);
+  }, [enrollAccount.TXObjects.length, enrollAccount.status]);
 
   return (
     <Card width={"450px"} mx={"auto"} px={4}>
@@ -23,7 +22,7 @@ const EnrollAccount = () => {
       <Box>
         <Text mb={3}>Make deposits, withdrawals, and earn daily interest.</Text>
       </Box>
-      <Button onClick={enrollAccount}>Enroll</Button>
+      <Button onClick={handleEnroll}>Enroll</Button>
     </Card>
   );
 };

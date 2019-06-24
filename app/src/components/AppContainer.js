@@ -1,60 +1,48 @@
-import React from "react";
-import { drizzleReactHooks } from "drizzle-react";
-import { Box, Flex, Heading, Text, Card, ToastMessage } from "rimble-ui";
+import React, { useState } from "react";
+import {
+  Box,
+  Flex,
+  Heading,
+  Text,
+  ToastMessage,
+  MetaMaskButton
+} from "rimble-ui";
 import Header from "./Header";
-import ConnectionBanner from "@rimble/connection-banner";
-import NetworkIndicator from "@rimble/network-indicator";
-import WalletBlock from "./WalletBlock";
-import PrimaryCard from "./PrimaryCard";
+import ConnectWallet from "./ConnectWallet";
 
-const AppContainer = props => {
-  const { drizzle } = drizzleReactHooks.useDrizzle();
+const AppContainer = () => {
+  const [connect, setConnect] = useState(false);
+  const connectWallet = () => setConnect(true);
 
-  const drizzleState = drizzleReactHooks.useDrizzleState(
-    drizzleState => drizzleState
-  );
-  console.log(drizzleState);
-
-  const mainAccount = drizzleState.accounts[0];
-  const accountBalWei = drizzleState.accountBalances[mainAccount]; //in wei
-
-  let accountBalEth =
-    drizzle.web3.utils && drizzle.web3.utils.fromWei(accountBalWei, "ether");
+  const renderContent = () => {
+    if (connect) {
+      return <ConnectWallet />;
+    } else {
+      return (
+        <Box>
+          <MetaMaskButton onClick={connectWallet} width={1 / 2} my={4}>
+            Connect with MetaMask
+          </MetaMaskButton>
+        </Box>
+      );
+    }
+  };
 
   return (
-    <Box>
-      <Header />
-      <Box maxWidth={"640px"} mx={"auto"} p={3}>
-        <ConnectionBanner
-          currentNetwork={drizzleState.web3.networkId}
-          requiredNetwork={5777}
-        />
-      </Box>
-
-      <Flex maxWidth={"640px"} mx={"auto"} p={3}>
+    <Box maxWidth={"640px"} mx={"auto"} p={3}>
+      <Flex>
         <Heading.h2 mr={3}>
           <span role="img" aria-label="Waving hand">
             👋
           </span>
         </Heading.h2>
         <Text>
-          Hi there, see Rimble components in action with our demo Ethereum dApp.
-          Change the value below to get started. Check out our repos – links are
-          in the footer!
+          Welcome to my bank. You can deposit ether, make withrawals anytime and
+          best of all, earn daily interest on deposits. You only need a minimum
+          balance of 1 USD. Connect your wallet to get started.
         </Text>
       </Flex>
-      <Card maxWidth={"640px"} mx={"auto"} p={4}>
-        <NetworkIndicator
-          currentNetwork={drizzleState.web3.networkId}
-          requiredNetwork={5777}
-        />
-      </Card>
-      <WalletBlock
-        account={mainAccount}
-        accountBalance={accountBalEth}
-        accountBalanceLow={accountBalEth < 1}
-      />
-      <PrimaryCard />
+      {renderContent()}
       <ToastMessage.Provider ref={node => (window.toastProvider = node)} />
     </Box>
   );
