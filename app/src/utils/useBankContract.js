@@ -17,24 +17,9 @@ const useBankContract = () => {
   const web3 = drizzle.web3;
   const account = drizzleState && drizzleState.accounts[0];
   const transactions = drizzleState && drizzleState.transactions;
-
-  const interestPaid = useCacheEvents(
-    "SimpleBank",
-    "InterestPaid",
-    // Use memoization to only recreate listener when account changes.
-    useMemo(
-      () => ({
-        filter: { from: account },
-        fromBlock: 0
-      }),
-      [account]
-    )
-  );
-
   const accountBalWei = drizzleState.accountBalances[account];
 
   let accountBalEth = drizzle.web3.utils.fromWei(accountBalWei, "ether");
-
   let bankBalanceEth = 0;
   let minBalanceEth = 0;
   let contractBalanceEth = 0;
@@ -42,7 +27,6 @@ const useBankContract = () => {
   // enroll
   const isEnrolled = useCacheCall("SimpleBank", "enrolled", account);
   const enrollAccount = useCacheSend("SimpleBank", "enroll");
-
   const bankBalance = useCacheCall("SimpleBank", "getBalance", {
     from: account
   });
@@ -91,15 +75,28 @@ const useBankContract = () => {
   const pauseContract = useCacheSend("SimpleBank", "pause");
   const unpauseContract = useCacheSend("SimpleBank", "unpause");
 
+  const allEvents = useCacheEvents(
+    "SimpleBank",
+    "allEvents",
+    // Use memoization to only recreate listener when account changes.
+    useMemo(
+      () => ({
+        filter: { accountAddress: account },
+        fromBlock: 0
+      }),
+      [account]
+    )
+  );
+
   return {
     web3,
-    interestPaid,
     transactions,
     account,
     accountBalEth,
     isEnrolled,
     enrollAccount,
     bankBalanceEth,
+    bankBalance,
     deposit,
     withdraw,
     closeAccount,
@@ -116,7 +113,8 @@ const useBankContract = () => {
     stopInterest,
     isPaused,
     pauseContract,
-    unpauseContract
+    unpauseContract,
+    allEvents
   };
 };
 

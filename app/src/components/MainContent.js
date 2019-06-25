@@ -40,6 +40,7 @@ const MainContent = () => {
         accountBalanceLow={accountBalEth < 1}
       />
       <BankBlock account={account} />
+
       <ToastMessage.Provider ref={node => (window.toastProvider = node)} />
     </Box>
   );

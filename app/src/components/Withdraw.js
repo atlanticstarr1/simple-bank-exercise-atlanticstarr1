@@ -24,7 +24,6 @@ const Withdraw = () => {
     }
   }, [withdraw.TXObjects.length, withdraw.status]);
 
-  const disableControl = !(bankBalanceEth > 0);
   return (
     <div>
       <Form onSubmit={handleSubmit}>
@@ -39,13 +38,10 @@ const Withdraw = () => {
               required
               onChange={handleChange}
               value={withdrawAmount}
-              disabled={disableControl}
               title="Enter amount of ETH to withdraw"
             />
           </Form.Field>
-          <Button type="submit" disabled={disableControl}>
-            Withdraw
-          </Button>
+          <Button type="submit">Withdraw</Button>
         </Flex>
       </Form>
     </div>

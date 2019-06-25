@@ -3,6 +3,7 @@ import useBankContract from "../utils/useBankContract";
 import AdminView from "./AdminView";
 import EnrollAccount from "./EnrollAccount";
 import BankAccount from "./BankAccount";
+import ShowTransactions from "./ShowTransactions";
 import { Heading } from "rimble-ui";
 
 const BankBlock = () => {
@@ -16,6 +17,7 @@ const BankBlock = () => {
     <div>
       {isOwner && <AdminView />}
       <BankAccount />
+      <ShowTransactions />
     </div>
   );
 };

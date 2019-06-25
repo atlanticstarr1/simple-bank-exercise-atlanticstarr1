@@ -35,10 +35,10 @@ const WriteToOracle = () => {
     const interval = setInterval(() => {
       const nonce = Math.floor(Math.random() * 1000);
       write.send(price, nonce);
-    }, 20000);
+    }, 2000000);
 
     return () => clearInterval(interval);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // END OF DEMO
