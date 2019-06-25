@@ -9,9 +9,17 @@ const ShowBankBalance = () => {
     account,
     minBalanceEth,
     minBalanceUsd,
+    bankBalanceEth,
     transactions
   } = useBankContract();
   const { drizzle } = drizzleReactHooks.useDrizzle();
+
+  // calculate usd equivalent
+  let usdPrice = 0;
+  const oneUsdInEther = minBalanceEth / minBalanceUsd;
+  if (isFinite(oneUsdInEther)) {
+    usdPrice = parseFloat(balanceEth / oneUsdInEther).toFixed(2);
+  }
 
   // memo funcion
   const getBalance = async () => {
@@ -24,10 +32,6 @@ const ShowBankBalance = () => {
   };
 
   useMemo(getBalance, [account, transactions]);
-
-  // calculate usd equivalent
-  const oneUsdInEther = minBalanceEth / minBalanceUsd;
-  const usdPrice = parseFloat(balanceEth / oneUsdInEther).toFixed(2);
 
   return (
     <Flex flexDirection={"column"}>

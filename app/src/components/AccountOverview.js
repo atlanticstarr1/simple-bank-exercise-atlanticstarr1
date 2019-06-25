@@ -16,15 +16,21 @@ const AccountOverview = props => {
   return (
     <Flex alignItems={"flex-start"}>
       <Flex mr={3}>
-        <Flex border={1} borderColor={"moon-gray"} p={1}>
+        <Flex>
           <QR value={props.account} size={100} renderAs={"svg"} />
         </Flex>
       </Flex>
-      <Box>
+      <Box flex={1} mt={3}>
         <PublicAddress address={props.account} />
-        <Text fontSize={1} color={props.accountBalanceLow ? "red" : "mid-gray"}>
-          Balance: {roundedBalance} ETH
-        </Text>
+        {/* <Text
+          fontSize={"2rem"}
+          fontWeight={1}
+          lineHeight={0.5}
+          mb={3}
+          color={props.accountBalanceLow ? "red" : "mid-gray"}
+        >
+          {roundedBalance} ETH
+        </Text> */}
       </Box>
     </Flex>
   );

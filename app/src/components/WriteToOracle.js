@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Flex, Box, Button, Form, Card, Heading, Text } from "rimble-ui";
+import { Flex, Box, Button, Form, Text } from "rimble-ui";
 import useOracle from "../utils/useOracle";
 import { showTransactionToast } from "../utils/TransactionToastUtil";
 
@@ -23,10 +23,6 @@ const WriteToOracle = () => {
       showTransactionToast(write.status);
     }
   }, [write.TXObjects.length, write.status]);
-
-  useEffect(() => {
-    setPrice(value);
-  }, [value]);
 
   // START OF DEMO
   // DEMO PURPOSES ONLY - THE ORACLE WILL UPDATE ITS DATA ONCE PER 30 SECONDS. IN REALITY

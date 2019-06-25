@@ -144,6 +144,12 @@ contract SimpleBank is Ownable, Pausable, Searcher {
         return accounts.length;
     }
 
+    /// @notice Get address of this contract
+    /// @return The contract address
+    function getContractAddress() public view returns (address) {
+        return address(this);
+    }
+
     /// @notice Get contract balance
     /// @return The balance of the contract
     function getContractBalance() public view onlyOwner returns(uint) {

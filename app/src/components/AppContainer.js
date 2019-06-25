@@ -28,7 +28,7 @@ const AppContainer = () => {
   };
 
   return (
-    <Box maxWidth={"640px"} mx={"auto"} p={3}>
+    <Box maxWidth={"800px"} mx={"auto"} p={3}>
       <Flex>
         <Heading.h2 mr={3}>
           <span role="img" aria-label="Waving hand">

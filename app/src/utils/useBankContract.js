@@ -16,6 +16,7 @@ const useBankContract = () => {
 
   const web3 = drizzle.web3;
   const account = drizzleState && drizzleState.accounts[0];
+  const contracts = drizzleState && drizzleState.contracts;
   const transactions = drizzleState && drizzleState.transactions;
   const accountBalWei = drizzleState.accountBalances[account];
 
@@ -46,7 +47,9 @@ const useBankContract = () => {
   const bankAccounts = useCacheCall("SimpleBank", "getAccounts");
 
   // contract balance
-  const contractBalance = useCacheCall("SimpleBank", "getContractBalance");
+  const contractBalance = useCacheCall("SimpleBank", "getContractBalance", {
+    from: account
+  });
   if (contractBalance) {
     let eth = web3.utils.fromWei(contractBalance, "ether");
     contractBalanceEth = parseFloat(eth).toFixed(5);
@@ -64,6 +67,7 @@ const useBankContract = () => {
   }
   const minBalanceUsd = useCacheCall("SimpleBank", "minBalanceUsd");
   const setMinBalance = useCacheSend("SimpleBank", "setMinBalance");
+  const contractAddress = useCacheCall("SimpleBank", "getContractAddress");
 
   // circuit breaker to start stop interest payments
   const payingInterest = useCacheCall("SimpleBank", "running");
@@ -90,8 +94,10 @@ const useBankContract = () => {
 
   return {
     web3,
+    contracts,
     transactions,
     account,
+    contractAddress,
     accountBalEth,
     isEnrolled,
     enrollAccount,

@@ -1,11 +1,36 @@
 import React, { useState } from "react";
-import { Flex, Box, Text, Button, Form, Card, Pill, Input } from "rimble-ui";
+import useBankContract from "../utils/useBankContract";
+import { Flex, Box, Heading, Table, EthAddress, Blockie } from "rimble-ui";
 
 const ViewAccounts = props => {
+  const { bankAccounts } = useBankContract();
+
   return (
-    <Text fontWeight={3} mb={3}>
-      ACCOUNTS
-    </Text>
+    <Table>
+      <thead>
+        <tr>
+          <th>Accounts ({bankAccounts && bankAccounts.length})</th>
+          <th style={{ textAlign: "center" }} />
+        </tr>
+      </thead>
+      <tbody>
+        {bankAccounts &&
+          bankAccounts.map(a => (
+            <tr key={a}>
+              <td>
+                <EthAddress address={a} />
+              </td>
+              <td style={{ textAlign: "center" }}>
+                <Blockie
+                  opts={{
+                    seed: a
+                  }}
+                />
+              </td>
+            </tr>
+          ))}
+      </tbody>
+    </Table>
   );
 };
 

@@ -94,9 +94,9 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.5.0;\r\n\r\n// for operation of this contract see the readme file.\r\n// Interpreting an address as an ILighthouse interface tells contracts that the following functions\r\n// can be called at said address. Gives an error if there is no lighthouse to actually call at the address.\r\ninterface ILighthouse {\r\n\r\n    function peekData() external view returns (uint128 v,bool b);\r\n\r\n    function peekUpdated()  external view returns (uint32 v,bool b);\r\n\r\n    function peekLastNonce() external view returns (uint32 v,bool b);\r\n\r\n    function peek() external view returns (bytes32 v ,bool ok);\r\n\r\n    function read() external view returns (bytes32 x);\r\n}\r\n",
-  "sourcePath": "C:\\Users\\David\\Documents\\Projects\\finalproject\\simple-bank-exercise-atlanticstarr1\\contracts\\Ilighthouse.sol",
+  "sourcePath": "/Users/dnoel/Documents/projects/consensys/finalproject/simple-bank-exercise-atlanticstarr1/contracts/Ilighthouse.sol",
   "ast": {
-    "absolutePath": "/C/Users/David/Documents/Projects/finalproject/simple-bank-exercise-atlanticstarr1/contracts/Ilighthouse.sol",
+    "absolutePath": "/Users/dnoel/Documents/projects/consensys/finalproject/simple-bank-exercise-atlanticstarr1/contracts/Ilighthouse.sol",
     "exportedSymbols": {
       "ILighthouse": [
         35
@@ -511,7 +511,7 @@
     "src": "0:660:0"
   },
   "legacyAST": {
-    "absolutePath": "/C/Users/David/Documents/Projects/finalproject/simple-bank-exercise-atlanticstarr1/contracts/Ilighthouse.sol",
+    "absolutePath": "/Users/dnoel/Documents/projects/consensys/finalproject/simple-bank-exercise-atlanticstarr1/contracts/Ilighthouse.sol",
     "exportedSymbols": {
       "ILighthouse": [
         35
@@ -931,7 +931,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.9",
-  "updatedAt": "2019-06-25T08:03:02.008Z",
+  "updatedAt": "2019-06-25T22:30:58.486Z",
   "devdoc": {
     "methods": {}
   },
