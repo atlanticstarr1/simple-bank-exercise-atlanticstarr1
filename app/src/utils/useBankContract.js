@@ -96,6 +96,7 @@ const useBankContract = () => {
   return {
     web3,
     drizzle,
+    drizzleState,
     contracts,
     transactions,
     account,

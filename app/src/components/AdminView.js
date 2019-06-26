@@ -4,7 +4,6 @@ import PauseContract from "./PauseContract";
 import EditContract from "./EditContract";
 import Oracle from "./Oracle";
 import ViewAccounts from "./ViewAccounts";
-import BankStats from "./BankStats";
 
 const AdminView = props => {
   return (
@@ -14,7 +13,6 @@ const AdminView = props => {
       <PauseContract />
       <Oracle />
       <ViewAccounts />
-      <BankStats />
     </div>
   );
 };

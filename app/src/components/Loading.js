@@ -33,4 +33,12 @@ const LoadError = () => {
   );
 };
 
-export { LoadStatus, LoadError };
+const Web3Error = () => {
+  return (
+    <Flash my={3} variant="danger">
+      Error loading Web3.
+    </Flash>
+  );
+};
+
+export { LoadStatus, LoadError, Web3Error };
