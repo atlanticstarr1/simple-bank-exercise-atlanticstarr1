@@ -4,7 +4,7 @@ import useOracle from "../utils/useOracle";
 import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const WriteToOracle = () => {
-  const [price, setPrice] = useState(340000000000000);
+  const [price, setPrice] = useState(0);
   const { value, write } = useOracle();
 
   const handleChange = e => {

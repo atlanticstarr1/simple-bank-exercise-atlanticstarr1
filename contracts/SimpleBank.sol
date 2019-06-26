@@ -17,8 +17,8 @@ contract SimpleBank is Ownable, Pausable, Searcher {
     uint public interestRate = 3;
     // Min balance required (USD) to start receiving interest payments.
     uint public minBalanceUsd = 1;
-    // Eth equivalent of min balance.
-    uint public minBalanceEth;
+    // Eth equivalent of min balance (1eth ~ $320 USD 6/25/19)
+    uint public minBalanceEth = 3200000000000000;
     // Total interest paid by bank to date
     uint private totalInterestPaid;
     // Are interest payments running?

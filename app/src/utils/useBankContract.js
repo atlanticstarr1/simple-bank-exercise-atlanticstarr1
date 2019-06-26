@@ -15,9 +15,9 @@ const useBankContract = () => {
   );
 
   const web3 = drizzle.web3;
-  const account = drizzleState && drizzleState.accounts[0];
-  const contracts = drizzleState && drizzleState.contracts;
-  const transactions = drizzleState && drizzleState.transactions;
+  const account = drizzleState.accounts[0];
+  const contracts = drizzleState.contracts;
+  const transactions = drizzleState.transactions;
   const accountBalWei = drizzleState.accountBalances[account];
 
   let accountBalEth = drizzle.web3.utils.fromWei(accountBalWei, "ether");
@@ -78,6 +78,7 @@ const useBankContract = () => {
   const isPaused = useCacheCall("SimpleBank", "paused");
   const pauseContract = useCacheSend("SimpleBank", "pause");
   const unpauseContract = useCacheSend("SimpleBank", "unpause");
+  const oneUsdInEther = minBalanceEth / minBalanceUsd;
 
   const allEvents = useCacheEvents(
     "SimpleBank",
@@ -94,6 +95,7 @@ const useBankContract = () => {
 
   return {
     web3,
+    drizzle,
     contracts,
     transactions,
     account,
@@ -118,6 +120,7 @@ const useBankContract = () => {
     startInterest,
     stopInterest,
     isPaused,
+    oneUsdInEther,
     pauseContract,
     unpauseContract,
     allEvents

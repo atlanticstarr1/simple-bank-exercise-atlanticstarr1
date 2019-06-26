@@ -21,6 +21,7 @@ const Deposit = () => {
   useEffect(() => {
     if (deposit.status) {
       showTransactionToast(deposit.status);
+      console.log("deposit message");
     }
   }, [deposit.TXObjects.length, deposit.status]);
 

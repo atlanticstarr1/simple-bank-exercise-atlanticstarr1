@@ -6,6 +6,7 @@ const options = {
   polls: {
     accounts: 3000
   },
+  syncAlways: true,
   events: {
     SimpleBank: ["InterestPaid"]
   },
