@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Flex, Box, ToastMessage, MetaMaskButton } from "rimble-ui";
 import ConnectWallet from "./ConnectWallet";
 import LandingPage from "./LandingPage";
+import AdminView1 from "./AdminView1";
 
 const AppContainer = () => {
   const [connect, setConnect] = useState(false);
@@ -20,7 +21,7 @@ const AppContainer = () => {
   };
 
   return (
-    <Flex flexDirection={"column"} maxWidth={"800px"} mx={"auto"} p={3}>
+    <Flex maxWidth={"800px"} mx={"auto"} p={3}>
       <Box flex={1}>
         {!connect && <LandingPage />}
         {renderContent()}

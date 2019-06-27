@@ -16277,14 +16277,202 @@
   },
   "networks": {
     "5777": {
-      "events": {},
+      "events": {
+        "0x6132d0e5700fe03060d64172a9ce706f525f7dfacb454a300ba78f4b50fc8722": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "accountAddress",
+              "type": "address"
+            }
+          ],
+          "name": "Enrolled",
+          "type": "event",
+          "signature": "0x6132d0e5700fe03060d64172a9ce706f525f7dfacb454a300ba78f4b50fc8722"
+        },
+        "0x2da466a7b24304f47e87fa2e1e5a81b9831ce54fec19055ce277ca2f39ba42c4": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "accountAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "Deposited",
+          "type": "event",
+          "signature": "0x2da466a7b24304f47e87fa2e1e5a81b9831ce54fec19055ce277ca2f39ba42c4"
+        },
+        "0x92ccf450a286a957af52509bc1c9939d1a6a481783e142e41e2499f0bb66ebc6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "accountAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "withdrawAmount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "newBalance",
+              "type": "uint256"
+            }
+          ],
+          "name": "Withdrawn",
+          "type": "event",
+          "signature": "0x92ccf450a286a957af52509bc1c9939d1a6a481783e142e41e2499f0bb66ebc6"
+        },
+        "0x7aada01f2a633efb947ddd92f84368215074ce99a5f64c26640f254736b2f256": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "accountAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "balanceAtClose",
+              "type": "uint256"
+            }
+          ],
+          "name": "ClosedAccount",
+          "type": "event",
+          "signature": "0x7aada01f2a633efb947ddd92f84368215074ce99a5f64c26640f254736b2f256"
+        },
+        "0xb649edc74cd53433b79a1a19533b3da41388aced726877221cdcc8f62aa2e167": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_rate",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_minBalanceRequired",
+              "type": "uint256"
+            }
+          ],
+          "name": "InterestPaymentStarted",
+          "type": "event",
+          "signature": "0xb649edc74cd53433b79a1a19533b3da41388aced726877221cdcc8f62aa2e167"
+        },
+        "0xc71719f7239fd33565193a96ebb310019cc5d648542721948e1dda12eb7d1edb": {
+          "anonymous": false,
+          "inputs": [],
+          "name": "InterestPaymentStopped",
+          "type": "event",
+          "signature": "0xc71719f7239fd33565193a96ebb310019cc5d648542721948e1dda12eb7d1edb"
+        },
+        "0x53ba314319f9ad9ecc35e1a102b598107f143841d7d768534884a3b6909d4a15": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_totalInterest",
+              "type": "uint256"
+            }
+          ],
+          "name": "InterestPaid",
+          "type": "event",
+          "signature": "0x53ba314319f9ad9ecc35e1a102b598107f143841d7d768534884a3b6909d4a15"
+        },
+        "0x21377057725737f96cb536a76ef32eb0c7ce90d11fe2d96dd00d32612755ae1d": {
+          "anonymous": false,
+          "inputs": [],
+          "name": "DataNotValid",
+          "type": "event",
+          "signature": "0x21377057725737f96cb536a76ef32eb0c7ce90d11fe2d96dd00d32612755ae1d"
+        },
+        "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Paused",
+          "type": "event",
+          "signature": "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258"
+        },
+        "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "Unpaused",
+          "type": "event",
+          "signature": "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa"
+        },
+        "0x6719d08c1888103bea251a4ed56406bd0c3e69723c8a1686e017e7bbe159b6f8": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "PauserAdded",
+          "type": "event",
+          "signature": "0x6719d08c1888103bea251a4ed56406bd0c3e69723c8a1686e017e7bbe159b6f8"
+        },
+        "0xcd265ebaf09df2871cc7bd4133404a235ba12eff2041bb89d9c714a2621c7c7e": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "PauserRemoved",
+          "type": "event",
+          "signature": "0xcd265ebaf09df2871cc7bd4133404a235ba12eff2041bb89d9c714a2621c7c7e"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event",
+          "signature": "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"
+        }
+      },
       "links": {},
       "address": "0xE9D251AB3F04F275F944acaB0E5700784C683f51",
       "transactionHash": "0x51b8c952bdd8e9b9256b208b6e69b21b846c5f59dd9c73faaaef47b0769d8ad7"
     }
   },
   "schemaVersion": "3.0.9",
-  "updatedAt": "2019-06-26T15:35:15.201Z",
+  "updatedAt": "2019-06-27T20:02:31.191Z",
   "devdoc": {
     "author": "David Noel",
     "methods": {
