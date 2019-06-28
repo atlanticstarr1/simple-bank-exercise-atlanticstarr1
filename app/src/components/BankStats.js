@@ -21,7 +21,7 @@ const BankStats = () => {
     interestRate,
     contractBalanceEth,
     contractAddress,
-    oneUsdInEther
+    oneUsdEth
   } = useBankContract();
 
   return (
@@ -51,7 +51,7 @@ const BankStats = () => {
         <Box flex={1}>
           <Text>Trusted with</Text>
           <Pill color="green">
-            ${ethToUsd(oneUsdInEther, contractBalanceEth)} USD (~
+            ${ethToUsd(oneUsdEth, contractBalanceEth)} USD (~
             {contractBalanceEth} ETH)
           </Pill>
         </Box>

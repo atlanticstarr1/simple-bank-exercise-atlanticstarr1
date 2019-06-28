@@ -1,6 +1,7 @@
 // convert eth to usd
 const ethToUsd = (rate, ethBal) => {
-  const usdPrice = parseFloat(ethBal / rate).toFixed(2);
+  let usdPrice = 0;
+  if (rate) usdPrice = parseFloat(ethBal / rate).toFixed(2);
   return usdPrice;
 };
 

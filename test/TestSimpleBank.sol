@@ -99,6 +99,9 @@ contract TestSimpleBank {
       // Trigger oracle to get ten cents (usd) in ether (will be done daily on mainnet)
       testpoke();
 
+      // Pay interest
+      bank.payInterest();
+
       // re-read balance to get balance + interest (daily balance after interest added)
       uint newbalance = bank.getBalance();
       Assert.isTrue(newbalance > balance, "Interest was not paid");
@@ -115,6 +118,9 @@ contract TestSimpleBank {
 
       // Trigger oracle to get ten cents (usd) in ether (will be done daily on mainnet)
       testpoke();
+
+       // Pay interest
+      bank.payInterest();
 
       // re-read balance to get balance + interest (daily balance after interest added)
       uint newbalance = bank.getBalance();

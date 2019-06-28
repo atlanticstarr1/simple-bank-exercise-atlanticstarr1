@@ -6,10 +6,10 @@ import OracleSearcher from "./OracleSearcher";
 const Oracle = () => {
   return (
     <Flex>
-      <Box flex={1 / 2} mr={3}>
+      <Box mr={3}>
         <WriteToOracle />
       </Box>
-      <Box flex={1}>
+      <Box>
         <OracleSearcher />
       </Box>
     </Flex>

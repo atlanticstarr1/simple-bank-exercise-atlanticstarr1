@@ -6,60 +6,66 @@ import 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
 import "../contracts/Ilighthouse.sol"; // Rhombus oracle
 import "../contracts/Lighthouse.sol";
 
-/// @author David Noel
 /// @title A bank contract that pays its users interest on a daily basis.
+/// @author David Noel
+/// @notice Interest is based on maintaining a minumum balance in USD, which
+/// is converted to ETH using a rate fed into the contract by an Oracle.
+/// The rate is 10 cents (USD) of ETH.
 contract SimpleBank is Ownable, Pausable, Searcher {
     using SafeMath for uint256;
 
-    // State variables
-
-    // Bank interest rate
+    /// Bank interest rate
     uint public interestRate = 3;
-    // Min balance required (USD) to start receiving interest payments.
+    /// Min balance required (USD) to start receiving interest payments.
     uint public minBalanceUsd = 1;
-    // Eth equivalent of min balance (1eth ~ $320 USD 6/25/19)
-    uint public minBalanceEth = 3200000000000000;
-    // Total interest paid by bank to date
+    /// Min balance required (ETH)
+    uint public minBalanceEth;
+    /// Ten cents (USD) in ETH. Defaulted using (0.1 USD ~ 0.00033 ETH 6/28/19)
+    uint public tenCents = 330000000000000;
+    /// Total interest paid by bank to date
     uint private totalInterestPaid;
-    // Are interest payments running?
-    bool public running;
-    // ETHUSD lighthouse oracle
+    /// Are interest payments running?
+    bool public interestRunning;
+    /// ETHUSD lighthouse oracle
     ILighthouse  public myLighthouse;
-    // Array of users registered
+    /// Array of users registered
     address[] private accounts;
-    /* Protect our users balance from being viewable from other contracts. */
+    /// Users balance.
     mapping (address => uint) private balances;
-    /* Getter function to allow contracts to be able to see if a user is enrolled. */
+    /// Function to allow contracts to be able to see if a user is enrolled.
     mapping (address => bool) public enrolled;
 
-    // Events
-
-    /* When a user signs up */
+    /// When a user signs up
     event Enrolled(address indexed accountAddress);
-    /* When a user makes a deposit */
+    /// When a user makes a deposit
     event Deposited(address indexed accountAddress, uint amount);
-    /* When a user makes a withdrawal */
+    /// When a user makes a withdrawal
     event Withdrawn(address indexed accountAddress, uint withdrawAmount, uint newBalance);
-    /* When a user closes their account */
+    /// When a user closes their account
     event ClosedAccount(address indexed accountAddress, uint balanceAtClose);
-    event InterestPaymentStarted(uint _rate, uint _minBalanceRequired);
-    event InterestPaymentStopped();
-    event InterestPaid(uint _totalInterest);
-    event DataNotValid();   // for invalid oracle data
+    /// When interest payment starts
+    event InterestStarted();
+    /// When interest payment stops
+    event InterestStopped();
+    // When interest is paid by bank
+    event InterestPaid(uint _totalInterestPaid);
+    /// When oracle data is not valid
+    event DataNotValid();
 
-    // Modifiers
-
+    /// Check if user is enrolled.
     modifier isEnrolled(){
         require(enrolled[msg.sender], "You must first enroll");
         _;
     }
 
+    /// Check user is not already enrolled, and user address is valid.
     modifier checkEnroll(){
-        require(msg.sender != address(0),"Invalid address.");
+        require(msg.sender != address(0), "Invalid address.");
         require(!enrolled[msg.sender], "Already enrolled.");
         _;
     }
 
+    /// Ensure user has enough balance to withdraw, and bank can pay user.
     modifier checkWithdraw(uint withdrawAmount){
         require(withdrawAmount > 0, "Withrawal must be greater than 0");
         require(balances[msg.sender] >= withdrawAmount, "Insufficient balance");
@@ -67,19 +73,21 @@ contract SimpleBank is Ownable, Pausable, Searcher {
         _;
     }
 
+    /// Ensures sender is oracle.
     modifier onlyLighthouse {
         require (msg.sender == address(myLighthouse), "Unauthorised");
         _;
     }
 
-    // Constructor
-
+    /**
+     * @dev Initializes the contract setting the deployer as the initial owner
+     * the Rhombus Oracle address, the minumum balance in ETH, and starts interest payments
+     */
     constructor(ILighthouse _myLighthouse) public {
         myLighthouse = _myLighthouse;
+        updateMinBalanceEth();
         startPayments();
     }
-
-    // Functions
 
     /// @notice Enroll a customer with the bank
     /// @return The users enrolled status
@@ -92,7 +100,6 @@ contract SimpleBank is Ownable, Pausable, Searcher {
 
     /// @notice Deposit ether into bank
     /// @return The balance of the user after the deposit is made
-    // Users should be enrolled before they can make deposits
     function deposit() external payable isEnrolled whenNotPaused returns (uint _balance) {
         require(msg.value > 0, "Deposit must be greater than 0");
         balances[msg.sender] = balances[msg.sender].add(msg.value);
@@ -100,11 +107,11 @@ contract SimpleBank is Ownable, Pausable, Searcher {
         emit Deposited(msg.sender, msg.value);
     }
 
-    /// @notice Withdraw ether from bank
+    /// @notice Withdraw ether from bank using pull pattern (to prevent re-entrancy)
+    /// checks-effects-interaction pattern to prevent re-entrancy
     /// @dev This does not return any excess ether sent to it
     /// @param withdrawAmount amount you want to withdraw
     /// @return The balance remaining for the user
-    // checks-effects-interaction pattern to prevent re-entrancy
     function withdraw(uint withdrawAmount) external isEnrolled checkWithdraw(withdrawAmount) returns (uint _balance) {
         balances[msg.sender] = balances[msg.sender].sub(withdrawAmount);
         msg.sender.transfer(withdrawAmount);
@@ -113,8 +120,8 @@ contract SimpleBank is Ownable, Pausable, Searcher {
     }
 
     /// @notice Close bank account and return all user's balance to them.
+    /// checks-effects-interaction pattern to prevent re-entrancy
     /// @return The enrolled status of the user.
-    // checks-effects-interaction pattern to prevent re-entrancy
     function closeAccount() external isEnrolled returns (bool) {
         uint totalBalance = balances[msg.sender];
         balances[msg.sender] = 0;
@@ -127,7 +134,7 @@ contract SimpleBank is Ownable, Pausable, Searcher {
     }
 
     /// @notice Get account balance
-    /// @return The balance of the user (wei)
+    /// @return The balance of the user
     function getBalance() public view returns (uint) {
         return balances[msg.sender];
     }
@@ -156,58 +163,70 @@ contract SimpleBank is Ownable, Pausable, Searcher {
         return address(this).balance;
     }
 
+    /// @notice Set the bank interest rate.
     function setInterestRate(uint _rate) public onlyOwner {
         require(_rate <= 6, "rate should be no more than 6");
         interestRate = _rate;
     }
 
-    // set minimum deposit in USD
+    /// @notice Set the minimum balance (USD, ETH) required to start receiving interest.
     function setMinBalance(uint _minBalance) public onlyOwner {
         require(_minBalance > 0, "balance should be greater than 0");
         minBalanceUsd = _minBalance;
+        updateMinBalanceEth();
     }
 
+    /// @notice Start interest payments. Circuit breaker pattern used.
     function startPayments() public onlyOwner whenNotPaused {
-        if(!running){
-        running = true;
-        emit InterestPaymentStarted(interestRate, minBalanceUsd);
+        if(!interestRunning){
+        interestRunning = true;
+        emit InterestStarted();
         }
     }
 
+    /// @notice Stop interest payments. Circuit breaker pattern used.
     function stopPayments() public onlyOwner whenNotPaused {
-        if(running){
-        running = false;
-        emit InterestPaymentStopped();
+        if(interestRunning){
+        interestRunning = false;
+        emit InterestStopped();
         }
     }
 
-    // Gets called everytime lighthouse data changes.
+    /// @notice Set 10 cents (USD) worth of ether. This will be called only by
+    /// the oracle, and when the contract is not paused (circuit breaker pattern).
     function poke() public onlyLighthouse whenNotPaused {
-        bool valid;
-        uint tenCents;
-        if (running) {
-            (tenCents, valid) = myLighthouse.peekData(); // get value in ETH of ten cents from Oracle
-            if (!valid) {
+        bool _valid;
+        uint _tenCents;
+            (_tenCents, _valid) = myLighthouse.peekData();
+            if (!_valid) {
                 emit DataNotValid();
                 return;
             }
-            minBalanceEth = tenCents * 10 * minBalanceUsd; // calculate 1 USD in Ether
-            payInterest();
-        }
+            tenCents = _tenCents;
+            updateMinBalanceEth();
     }
 
-    function payInterest() private {
-        // WARN: This unbounded for loop is an anti-pattern
+    /// @notice Pays interest to every account once criteria is met
+    /// @dev Warn: Unbounded for loop is an anti-pattern
+    function payInterest() external onlyOwner whenNotPaused {
+        if (!interestRunning) return;
         for (uint i = 0; i < accounts.length; i++) {
             address customerAddress = accounts[i];
-            uint balance = balances[customerAddress]; // get customer balance in eth
-            if(balance != 0 && balance >= minBalanceEth){ // customer is eligible to get interest payments
+            /// get customer balance
+            uint balance = balances[customerAddress];
+            /// Is customer eligible to receive interest payments ?
+            if(balance != 0 && balance >= minBalanceEth){
                 uint interest = (balance * interestRate).div(36500);
                 balances[customerAddress] = balances[customerAddress].add(interest);
                 totalInterestPaid += interest;
             }
         }
         emit InterestPaid(totalInterestPaid);
+    }
+
+    /// @notice Set the minimum balance in ETH.
+    function updateMinBalanceEth() private {
+        minBalanceEth = minBalanceUsd * 10 * tenCents;
     }
 
     // Fallback function - Called if other functions don't match call or

@@ -1,11 +1,14 @@
 import React from "react";
 import { Flex, Box, Text, Card, Heading, Blockie, Icon } from "rimble-ui";
+import useBankContract from "../utils/useBankContract";
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
 import CloseAccount from "./CloseAccount";
 import ShowBankBalance from "./ShowBankBalance";
 
 const BankAccount = ({ account }) => {
+  const { bankBalanceEth } = useBankContract();
+
   return (
     <Card px={4} mx={"auto"}>
       <Flex>
@@ -18,13 +21,13 @@ const BankAccount = ({ account }) => {
         </Box>
       </Flex>
       <Box mb={4}>
-        <ShowBankBalance />
+        <ShowBankBalance balanceEth={bankBalanceEth} />
       </Box>
       <Flex>
-        <Box mr={3}>
+        <Box flex={1} mr={3}>
           <Deposit />
         </Box>
-        <Box mr={3}>
+        <Box flex={1} mr={3}>
           <Withdraw />
         </Box>
         <Box alignSelf={"flex-end"}>

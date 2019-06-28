@@ -3,17 +3,17 @@ import useBankContract from "../utils/useBankContract";
 import { Flex, Box, Text } from "rimble-ui";
 import ethToUsd from "../utils/ethToUsd";
 
-const ShowBankBalance = () => {
+const ShowBankBalance = ({ balanceEth }) => {
   const [balUsd, setBalUsd] = useState(0);
-  const { oneUsdInEther, bankBalanceEth } = useBankContract();
+  const { oneUsdEth } = useBankContract();
 
   const calculateUsd = async () => {
     console.log("calling getbalance");
-    const usdPrice = ethToUsd(oneUsdInEther, bankBalanceEth);
+    const usdPrice = ethToUsd(oneUsdEth, balanceEth);
     setBalUsd(usdPrice);
   };
 
-  useMemo(calculateUsd, [bankBalanceEth]);
+  useMemo(calculateUsd, [balanceEth, oneUsdEth]);
 
   return (
     <Flex flexDirection={"column"}>
@@ -25,11 +25,11 @@ const ShowBankBalance = () => {
           textAlign={"center"}
           mb={3}
         >
-          {bankBalanceEth} ETH
+          {balanceEth} ETH
         </Text>
       </Box>
       <Box flex={1}>
-        <Text textAlign={"center"}>(~{balUsd} USD)</Text>
+        <Text textAlign={"center"}>(~ {balUsd} USD)</Text>
       </Box>
     </Flex>
   );

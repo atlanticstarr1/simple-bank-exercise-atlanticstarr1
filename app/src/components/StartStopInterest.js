@@ -3,7 +3,7 @@ import { Box, Text, Button, Card, Flex, Pill, Heading } from "rimble-ui";
 import useBankContract from "../utils/useBankContract";
 import { showTransactionToast } from "../utils/TransactionToastUtil";
 
-const InterestPayment = () => {
+const StartStopInterest = () => {
   const {
     account,
     startInterest,
@@ -51,4 +51,4 @@ const InterestPayment = () => {
     </Flex>
   );
 };
-export default InterestPayment;
+export default StartStopInterest;

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Flex, Box, Button, Card, Heading } from "rimble-ui";
-import InterestPayment from "./InterestPayment";
+import StartStopInterest from "./StartStopInterest";
 import PauseContract from "./PauseContract";
 import Oracle from "./Oracle";
 import ViewAccounts from "./ViewAccounts";
 import EditInterestRate from "./EditInterestRate";
 import EditMinimumBalance from "./EditMinimumBalance";
+import PayInterest from "./PayInterest";
 
 const AdminView = props => {
   const [showAdmin, setShowAdmin] = useState(false);
@@ -45,8 +46,11 @@ const AdminView = props => {
             <Box flex={1} mr={3}>
               <EditMinimumBalance />
             </Box>
+            <Box flex={1} mr={2}>
+              <PayInterest />
+            </Box>
             <Box mr={3}>
-              <InterestPayment />
+              <StartStopInterest />
             </Box>
             <Box>
               <PauseContract />

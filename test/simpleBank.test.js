@@ -1,23 +1,17 @@
-/*
-
-The public version of the file used for testing can be found here: https://gist.github.com/ConsenSys-Academy/ce47850a8e2cba6ef366625b665c7fba
-
-This test file has been updated for Truffle version 5.0. If your tests are failing, make sure that you are
-using Truffle version 5.0. You can check this by running "trufffle version"  in the terminal. If version 5 is not
-installed, you can uninstall the existing version with `npm uninstall -g truffle` and install the latest version (5.0)
-with `npm install -g truffle`.
-
-*/
+/** Initialize contracts to be tested and helper function to catch errors */
 let catchRevert = require("./exceptionsHelpers.js").catchRevert;
 var SimpleBank = artifacts.require("./SimpleBank.sol");
 var Lighthouse = artifacts.require("./Lighthouse.sol");
 
+/** Contract to test SimpleBank */
 contract("SimpleBank", function(accounts) {
+  /// Setup test accounts and deposit to be used in each test
   const owner = accounts[0];
   const alice = accounts[1];
   const bob = accounts[2];
   const deposit = web3.utils.toBN(2);
 
+  /// Before each test, redeploy contracts to start fresh.
   beforeEach(async () => {
     lighthouse = await Lighthouse.new();
     mybank = await SimpleBank.new(lighthouse.address);
@@ -246,7 +240,7 @@ contract("SimpleBank", function(accounts) {
     await lighthouse.write(dataValue, nonce);
     const result = await lighthouse.peekData();
     luckyNum = result[0];
-    assert.equal(dataValue, luckyNum, "write failed");
+    assert.equal(dataValue, luckyNum, "write to lighthouse failed");
   });
 
   // can pay interest to customers; deposit > 1 usd
@@ -263,6 +257,7 @@ contract("SimpleBank", function(accounts) {
     await lighthouse.changeSearcher(mybank.address, { from: owner });
     // update oracle with price (will be done daily)
     await lighthouse.write(dataValue, nonce);
+    await mybank.payInterest({ from: owner });
 
     // check new balance
     const newbalance = await mybank.getBalance({ from: alice });
@@ -282,6 +277,7 @@ contract("SimpleBank", function(accounts) {
     await lighthouse.changeSearcher(mybank.address, { from: owner });
     // update oracle with price (will be done daily)
     await lighthouse.write(dataValue, nonce);
+    await mybank.payInterest({ from: owner });
 
     // check new balance
     const newbalance = await mybank.getBalance({ from: alice });
@@ -308,5 +304,21 @@ contract("SimpleBank", function(accounts) {
     // check new balance
     const newbalance = await mybank.getBalance({ from: alice });
     assert.isTrue(newbalance.toString() == deposit, "no interest paid");
+  });
+
+  it("should not pay interest if not triggered by owner", async () => {
+    let dataValue = 370000000000000;
+    let nonce = 1234;
+    let deposit = web3.utils.toWei("1", "ether");
+
+    //alice deposit 1 ether
+    await mybank.enroll({ from: alice });
+    await mybank.deposit({ from: alice, value: deposit });
+
+    // tell oracle which contract to call when oracle's data is updated
+    await lighthouse.changeSearcher(mybank.address, { from: owner });
+    // update oracle with price (will be done daily)
+    await lighthouse.write(dataValue, nonce);
+    await catchRevert(mybank.payInterest({ from: alice }));
   });
 });
