@@ -38,7 +38,9 @@ const EditInterestRate = ({ rate }) => {
             value={interest}
           />
         </Form.Field>
-        <Button type="submit">Change rate</Button>
+        <Button type="submit" size={"small"}>
+          Change rate
+        </Button>
       </Flex>
     </Form>
   );

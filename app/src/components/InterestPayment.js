@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Box, Text, Button, Card, Pill, Heading } from "rimble-ui";
+import { Box, Text, Button, Card, Flex, Pill, Heading } from "rimble-ui";
 import useBankContract from "../utils/useBankContract";
 import { showTransactionToast } from "../utils/TransactionToastUtil";
 
@@ -30,23 +30,25 @@ const InterestPayment = () => {
   }, [stopInterest.TXObjects.length, stopInterest.status]);
 
   return (
-    <Card width={"450px"} mx={"auto"} px={4}>
-      <Heading.h4>Interest Payments</Heading.h4>
-      <Box>
-        <Text mb={3}>Start or stop paying interest to customers.</Text>
-        <Pill mb={3} color={payingInterest ? "green" : "danger"}>
-          {payingInterest ? "PAYING" : "NOT PAYING"}
+    <Flex flexDirection="column">
+      <Box mb={3}>
+        <Text fontSize={"14px"} fontWeight={600} mb={3}>
+          Interest Payments
+        </Text>
+        <Pill color={payingInterest ? "green" : "danger"} mb={2}>
+          {payingInterest ? "ACTIVE" : "NOT ACTIVE"}
         </Pill>
       </Box>
-
-      <Button
-        variant={payingInterest && "danger"}
-        onClick={toggleInterest}
-        width={1 / 2}
-      >
-        {payingInterest ? "Stop Payments" : "Start Payments"}
-      </Button>
-    </Card>
+      <Box>
+        <Button
+          variant={payingInterest && "danger"}
+          onClick={toggleInterest}
+          size={"small"}
+        >
+          {payingInterest ? "Stop Payments" : "Start Payments"}
+        </Button>
+      </Box>
+    </Flex>
   );
 };
 export default InterestPayment;

@@ -14,13 +14,13 @@ const useBankContract = () => {
     drizzleState => drizzleState
   );
 
-  const web3 = drizzle.web3;
+  const web3 = drizzle && drizzle.web3;
   const account = drizzleState.accounts[0];
   const contracts = drizzleState.contracts;
   const transactions = drizzleState.transactions;
   const accountBalWei = drizzleState.accountBalances[account];
 
-  let accountBalEth = drizzle.web3.utils.fromWei(accountBalWei, "ether");
+  let accountBalEth = web3.utils.fromWei(accountBalWei, "ether");
   let bankBalanceEth = 0;
   let minBalanceEth = 0;
   let contractBalanceEth = 0;

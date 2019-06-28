@@ -36,7 +36,9 @@ const EditMinimumBalance = ({ balance }) => {
             value={minBalanceUsd}
           />
         </Form.Field>
-        <Button type="submit">Change balance</Button>
+        <Button type="submit" size={"small"}>
+          Change balance
+        </Button>
       </Flex>
     </Form>
   );

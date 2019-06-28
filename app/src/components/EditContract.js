@@ -5,11 +5,11 @@ import EditInterestRate from "./EditInterestRate";
 import EditMinimumBalance from "./EditMinimumBalance";
 import InterestPayment from "./InterestPayment";
 
-const EditContract = ({ handleClick }) => {
+const EditContract = () => {
   const { interestRate, minBalanceUsd } = useBankContract();
 
   return (
-    <Card px={4} mx={"auto"}>
+    <Card mx={"auto"}>
       <Heading.h4>Interest Rate & Minimum Balance</Heading.h4>
       <Box>
         <Text mb={4}>Change bank's interest rate and minimum balance.</Text>
@@ -21,11 +21,7 @@ const EditContract = ({ handleClick }) => {
         <Box flex="1">
           {minBalanceUsd && <EditMinimumBalance balance={minBalanceUsd} />}
         </Box>
-        <Box flex={1}>
-          <InterestPayment />
-        </Box>
       </Flex>
-      <Button onClick={handleClick}>Go back</Button>
     </Card>
   );
 };

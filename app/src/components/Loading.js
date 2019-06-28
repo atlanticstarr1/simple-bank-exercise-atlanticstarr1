@@ -1,27 +1,51 @@
 import React from "react";
-import { Box, Flex, Text, Loader, Flash } from "rimble-ui";
+import { Box, Flex, Text, Loader, Flash, Card } from "rimble-ui";
+import ConnectionBanner from "@rimble/connection-banner";
+import NetworkIndicator from "@rimble/network-indicator";
+import { drizzleReactHooks } from "drizzle-react";
 
-const LoadStatus = ({ message }) => (
-  <Box
-    maxWidth={"640px"}
-    mx={"auto"}
-    bg={"#f6f6fc"}
-    p={3}
-    display={["none", "block"]}
-  >
-    <Flex alignItems={"center"}>
-      <Box position={"relative"} width={"4em"}>
-        <Box>
-          <Loader size={"3em"} />
-        </Box>
+const LoadStatus = ({ message }) => {
+  const drizzleState = drizzleReactHooks.useDrizzleState(
+    drizzleState => drizzleState
+  );
+  const requiredNetwork = 5777;
+
+  return (
+    <>
+      <Box mx={"auto"} p={1}>
+        <ConnectionBanner
+          currentNetwork={drizzleState.web3.networkId}
+          requiredNetwork={requiredNetwork}
+        />
       </Box>
-      <Box>
-        <Text fontWeight={4}>{message}...</Text>
-        <Text fontWeight={2}>Please wait</Text>
+      <Card mx={"auto"} p={4}>
+        <NetworkIndicator
+          currentNetwork={drizzleState.web3.networkId}
+          requiredNetwork={requiredNetwork}
+        />
+      </Card>
+      <Box
+        maxWidth={"640px"}
+        mx={"auto"}
+        bg={"#f6f6fc"}
+        p={3}
+        display={["none", "block"]}
+      >
+        <Flex alignItems={"center"}>
+          <Box position={"relative"} width={"4em"}>
+            <Box>
+              <Loader size={"3em"} />
+            </Box>
+          </Box>
+          <Box>
+            <Text fontWeight={4}>{message}...</Text>
+            <Text fontWeight={2}>Please wait</Text>
+          </Box>
+        </Flex>
       </Box>
-    </Flex>
-  </Box>
-);
+    </>
+  );
+};
 
 const LoadError = () => {
   return (

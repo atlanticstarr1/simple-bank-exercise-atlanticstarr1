@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Flex, Box, ToastMessage, MetaMaskButton } from "rimble-ui";
 import ConnectWallet from "./ConnectWallet";
 import LandingPage from "./LandingPage";
-import AdminView1 from "./AdminView1";
 
 const AppContainer = () => {
   const [connect, setConnect] = useState(false);

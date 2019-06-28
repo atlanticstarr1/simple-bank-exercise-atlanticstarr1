@@ -10,7 +10,7 @@ const ViewAccounts = props => {
       <thead>
         <tr>
           <th>Accounts ({bankAccounts && bankAccounts.length})</th>
-          <th style={{ textAlign: "center" }} />
+          <th />
         </tr>
       </thead>
       <tbody>

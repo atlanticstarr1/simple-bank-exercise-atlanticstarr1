@@ -9,15 +9,15 @@ const ConnectWallet = () => {
   const drizzle = new Drizzle(options);
   return (
     <drizzleReactHooks.DrizzleProvider drizzle={drizzle}>
-      {/* <drizzleReactHooks.Initializer
+      <drizzleReactHooks.Initializer
         error={<LoadError />}
         loadingContractsAndAccounts={
           <LoadStatus message="Loading contracts and accounts" />
         }
         loadingWeb3={<LoadStatus message="Loading web3" />}
-      > */}
-      <MainContent />
-      {/* </drizzleReactHooks.Initializer> */}
+      >
+        <MainContent />
+      </drizzleReactHooks.Initializer>
     </drizzleReactHooks.DrizzleProvider>
   );
 };

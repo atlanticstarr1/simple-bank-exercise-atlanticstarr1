@@ -7,33 +7,30 @@ import ShowBankBalance from "./ShowBankBalance";
 
 const BankAccount = ({ account }) => {
   return (
-    <Card maxWidth={"640px"} px={4} mx={"auto"}>
+    <Card px={4} mx={"auto"}>
       <Flex>
-        <Box mb={5} flex={1 / 4}>
+        <Box mb={4} flex={1 / 4}>
           <Icon color="tomato" name="AccountBalance" size="80" />
         </Box>
         <Box flex={1} my={3}>
           <Heading.h4>Bank Account</Heading.h4>
           <Text>Deposit and Withdraw Ether.</Text>
         </Box>
-        {/* <Box>
-          <Blockie opts={{ seed: account }} />
-        </Box> */}
       </Flex>
-      <Box mb={5}>
+      <Box mb={4}>
         <ShowBankBalance />
       </Box>
       <Flex>
-        <Box flex={1} mr={3}>
+        <Box mr={3}>
           <Deposit />
         </Box>
-        <Box flex={1} mr={3}>
+        <Box mr={3}>
           <Withdraw />
         </Box>
+        <Box alignSelf={"flex-end"}>
+          <CloseAccount />
+        </Box>
       </Flex>
-      <Box py={3}>
-        <CloseAccount />
-      </Box>
     </Card>
   );
 };

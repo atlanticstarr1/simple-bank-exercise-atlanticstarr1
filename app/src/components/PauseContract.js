@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Heading, Box, Text, Button, Card, Pill } from "rimble-ui";
+import { Heading, Box, Text, Button, Card, Flex, Pill } from "rimble-ui";
 import useBankContract from "../utils/useBankContract";
 import { showTransactionToast } from "../utils/TransactionToastUtil";
 
@@ -23,19 +23,25 @@ const PauseContract = () => {
   }, [unpauseContract.TXObjects.length, unpauseContract.status]);
 
   return (
-    <Card width={"450px"} mx={"auto"} px={4}>
-      <Heading.h4>Circuit Breaker</Heading.h4>
-      <Box>
-        <Text mb={3}>Pause enrollment, deposits and interest payments.</Text>
-        <Pill mb={3} color={isPaused ? "danger" : "green"}>
-          {isPaused ? "PAUSED" : "UNPAUSED"}
+    <Flex flexDirection="column">
+      <Box mb={3}>
+        <Text fontSize={"14px"} fontWeight={600} mb={3}>
+          Circuit Breaker
+        </Text>
+        <Pill color={isPaused ? "danger" : "green"} mb={2}>
+          {isPaused ? "DISABLED" : "ACTIVE"}
         </Pill>
       </Box>
-
-      <Button variant={!isPaused && "danger"} onClick={togglePauseContract}>
-        {isPaused ? "Unpause Contract" : "Pause Contract"}
-      </Button>
-    </Card>
+      <Box>
+        <Button
+          variant={!isPaused && "danger"}
+          onClick={togglePauseContract}
+          size={"small"}
+        >
+          {isPaused ? "Unpause Contract" : "Pause Contract"}
+        </Button>
+      </Box>
+    </Flex>
   );
 };
 export default PauseContract;

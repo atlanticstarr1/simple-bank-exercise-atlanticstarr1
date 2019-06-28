@@ -25,9 +25,7 @@ const OracleSearcher = () => {
 
   return (
     <Box>
-      <Text my={3}>
-        Contract address to be alerted when lighhouse data changes.
-      </Text>
+      <Text>Contract address to be alerted when lighhouse data changes.</Text>
       <Form onSubmit={handleSubmit}>
         <Flex flexDirection="column">
           <Form.Field label="Searcher address">
@@ -39,7 +37,9 @@ const OracleSearcher = () => {
               value={seeker}
             />
           </Form.Field>
-          <Button type="submit">Set address</Button>
+          <Button size={"small"} type="submit">
+            Set address
+          </Button>
         </Flex>
       </Form>
     </Box>

@@ -43,13 +43,7 @@ const WriteToOracle = () => {
   return (
     <div>
       <Box>
-        <Text>Ten cents (USD) worth of Ether.</Text>
-      </Box>
-      <Box my={3}>
-        <Text fontSize={"1.5rem"} fontWeight={1} textAlign={"center"}>
-          {value} wei
-        </Text>
-        <Text textAlign={"center"}>(~{ethprice} ETH)</Text>
+        <Text>Ten cents (USD) worth of ETH</Text>
       </Box>
       <Form onSubmit={handleSubmit}>
         <Flex flexDirection="column">
@@ -65,7 +59,15 @@ const WriteToOracle = () => {
               value={price}
             />
           </Form.Field>
-          <Button type="submit">Update price</Button>
+          <Button size={"small"} type="submit">
+            Update price
+          </Button>
+          <Box my={3}>
+            <Text fontSize={"1.3rem"} fontWeight={1} textAlign={"center"}>
+              {value} wei
+            </Text>
+            <Text textAlign={"center"}>(~{ethprice} ETH)</Text>
+          </Box>
         </Flex>
       </Form>
     </div>

@@ -41,7 +41,9 @@ const Withdraw = () => {
               title="Enter amount of ETH to withdraw"
             />
           </Form.Field>
-          <Button type="submit">Withdraw</Button>
+          <Button size={"small"} type="submit">
+            Withdraw
+          </Button>
         </Flex>
       </Form>
     </div>

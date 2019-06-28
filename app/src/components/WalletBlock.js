@@ -14,7 +14,7 @@ const WalletBlock = () => {
           <Heading.h4>Your Wallet</Heading.h4>
         </Box>
         <Box>
-          <Icon color="#85bb65" name="MonetizationOn" size="60" />
+          <Icon color="#85bb65" name="AttachMoney" size="60" />
         </Box>
         <Box alignSelf={"center"}>
           <Text

@@ -42,7 +42,9 @@ const Deposit = () => {
               title="Enter amount of ETH to deposit"
             />
           </Form.Field>
-          <Button type="submit">Deposit</Button>
+          <Button size={"small"} type="submit">
+            Deposit
+          </Button>
         </Flex>
       </Form>
     </div>
