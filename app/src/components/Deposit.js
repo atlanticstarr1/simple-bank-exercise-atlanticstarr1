@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Flex, Button, Form } from "rimble-ui";
 import useBankContract from "../utils/useBankContract";
-import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const Deposit = () => {
   const [depositAmount, setDepositAmount] = useState(0);
@@ -17,13 +16,6 @@ const Deposit = () => {
     const weiValue = depositAmount * 1e18;
     deposit.send({ from: account, value: weiValue });
   };
-
-  useEffect(() => {
-    if (deposit.status) {
-      showTransactionToast(deposit.status);
-      console.log("deposit message");
-    }
-  }, [deposit.TXObjects.length, deposit.status]);
 
   return (
     <div>

@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import useBankContract from "../utils/useBankContract";
 import { Flex, Button, Box, Modal, Card, Heading, Text } from "rimble-ui";
-import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const CloseAccount = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,12 +20,6 @@ const CloseAccount = () => {
     e.preventDefault();
     setIsOpen(false);
   };
-
-  useEffect(() => {
-    if (closeAccount.status) {
-      showTransactionToast(closeAccount.status);
-    }
-  }, [closeAccount.TXObjects.length, closeAccount.status]);
 
   return (
     <>

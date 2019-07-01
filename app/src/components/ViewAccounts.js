@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import useBankContract from "../utils/useBankContract";
-import { Flex, Box, Heading, Table, EthAddress, Blockie } from "rimble-ui";
+import { Table, EthAddress, Blockie } from "rimble-ui";
 
 const ViewAccounts = props => {
   const { bankAccounts } = useBankContract();

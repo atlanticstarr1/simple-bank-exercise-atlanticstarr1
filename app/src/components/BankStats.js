@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Heading,
   Box,
@@ -12,6 +12,7 @@ import {
 import NetworkIndicator from "@rimble/network-indicator";
 import useBankContract from "../utils/useBankContract";
 import ethToUsd from "../utils/ethToUsd";
+import { requiredNetwork } from "../constants";
 
 const BankStats = () => {
   const {
@@ -30,7 +31,7 @@ const BankStats = () => {
         <Box flex={1 / 2}>
           <NetworkIndicator
             currentNetwork={drizzleState.web3.networkId}
-            requiredNetwork={5777}
+            requiredNetwork={requiredNetwork}
           />
         </Box>
         <Box flex={1}>
@@ -43,7 +44,7 @@ const BankStats = () => {
           <Pill color="primary">{interestRate}% INTEREST</Pill>
         </Box>
         <Box flex={1}>
-          <Text>Minimum deposit</Text>
+          <Text>Minimum balance</Text>
           <Pill color="primary">
             ${minBalanceUsd} USD (~{minBalanceEth} ETH)
           </Pill>

@@ -3,12 +3,12 @@ import { Box, Flex, Text, Loader, Flash, Card } from "rimble-ui";
 import ConnectionBanner from "@rimble/connection-banner";
 import NetworkIndicator from "@rimble/network-indicator";
 import { drizzleReactHooks } from "drizzle-react";
+import { requiredNetwork } from "../constants";
 
 const LoadStatus = ({ message }) => {
   const drizzleState = drizzleReactHooks.useDrizzleState(
     drizzleState => drizzleState
   );
-  const requiredNetwork = 5777;
 
   return (
     <>

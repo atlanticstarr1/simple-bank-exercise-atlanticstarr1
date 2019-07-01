@@ -88,15 +88,15 @@
       "type": "function"
     }
   ],
-  "metadata": "",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.8+commit.23d335f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[],\"name\":\"peekData\",\"outputs\":[{\"name\":\"v\",\"type\":\"uint128\"},{\"name\":\"b\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"read\",\"outputs\":[{\"name\":\"x\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"peek\",\"outputs\":[{\"name\":\"v\",\"type\":\"bytes32\"},{\"name\":\"ok\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"peekUpdated\",\"outputs\":[{\"name\":\"v\",\"type\":\"uint32\"},{\"name\":\"b\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"peekLastNonce\",\"outputs\":[{\"name\":\"v\",\"type\":\"uint32\"},{\"name\":\"b\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/C/Users/David/Documents/Projects/finalproject/simple-bank-exercise-atlanticstarr1/contracts/Ilighthouse.sol\":\"ILighthouse\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/C/Users/David/Documents/Projects/finalproject/simple-bank-exercise-atlanticstarr1/contracts/Ilighthouse.sol\":{\"keccak256\":\"0x946015fdde74e7c35782c46f8791399c611f6966f02adca544a3e5cb5670c51b\",\"urls\":[\"bzzr://3d270741f08d764a3c87e8b29151faf7cd4a05602756f3c7c3c2cd62f379228a\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.5.0;\r\n\r\n// for operation of this contract see the readme file.\r\n// Interpreting an address as an ILighthouse interface tells contracts that the following functions\r\n// can be called at said address. Gives an error if there is no lighthouse to actually call at the address.\r\ninterface ILighthouse {\r\n\r\n    function peekData() external view returns (uint128 v,bool b);\r\n\r\n    function peekUpdated()  external view returns (uint32 v,bool b);\r\n\r\n    function peekLastNonce() external view returns (uint32 v,bool b);\r\n\r\n    function peek() external view returns (bytes32 v ,bool ok);\r\n\r\n    function read() external view returns (bytes32 x);\r\n}\r\n",
-  "sourcePath": "/Users/dnoel/Documents/projects/consensys/finalproject/simple-bank-exercise-atlanticstarr1/contracts/Ilighthouse.sol",
+  "sourcePath": "C:\\Users\\David\\Documents\\Projects\\finalproject\\simple-bank-exercise-atlanticstarr1\\contracts\\Ilighthouse.sol",
   "ast": {
-    "absolutePath": "/Users/dnoel/Documents/projects/consensys/finalproject/simple-bank-exercise-atlanticstarr1/contracts/Ilighthouse.sol",
+    "absolutePath": "/C/Users/David/Documents/Projects/finalproject/simple-bank-exercise-atlanticstarr1/contracts/Ilighthouse.sol",
     "exportedSymbols": {
       "ILighthouse": [
         35
@@ -511,7 +511,7 @@
     "src": "0:660:0"
   },
   "legacyAST": {
-    "absolutePath": "/Users/dnoel/Documents/projects/consensys/finalproject/simple-bank-exercise-atlanticstarr1/contracts/Ilighthouse.sol",
+    "absolutePath": "/C/Users/David/Documents/Projects/finalproject/simple-bank-exercise-atlanticstarr1/contracts/Ilighthouse.sol",
     "exportedSymbols": {
       "ILighthouse": [
         35
@@ -927,11 +927,11 @@
   },
   "compiler": {
     "name": "solc",
-    "version": "0.5.0+commit.1d4f565a.Emscripten.clang"
+    "version": "0.5.8+commit.23d335f2.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.0.9",
-  "updatedAt": "2019-06-28T18:10:57.432Z",
+  "schemaVersion": "3.0.11",
+  "updatedAt": "2019-07-01T02:04:47.990Z",
   "devdoc": {
     "methods": {}
   },

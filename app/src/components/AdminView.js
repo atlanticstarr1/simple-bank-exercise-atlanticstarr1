@@ -40,16 +40,13 @@ const AdminView = props => {
         <Card mx={"auto"}>
           <Heading.h4 mb={3}>Bank Admin</Heading.h4>
           <Flex mb={3}>
-            <Box flex={1} mr={3}>
+            <Box flex={1} mr={2}>
               <EditInterestRate />
             </Box>
-            <Box flex={1} mr={3}>
+            <Box flex={1} mr={2}>
               <EditMinimumBalance />
             </Box>
-            <Box flex={1} mr={2}>
-              <PayInterest />
-            </Box>
-            <Box mr={3}>
+            <Box mr={2}>
               <StartStopInterest />
             </Box>
             <Box>
@@ -59,9 +56,16 @@ const AdminView = props => {
           <Flex mb={3}>
             <ViewAccounts />
           </Flex>
-          <Button.Outline size="small" onClick={toggleBankDashboard}>
-            Close
-          </Button.Outline>
+          <Flex>
+            <Box mr={3}>
+              <Button.Outline size="small" onClick={toggleBankDashboard}>
+                Close
+              </Button.Outline>
+            </Box>
+            <Box>
+              <PayInterest />
+            </Box>
+          </Flex>
         </Card>
       )}
       {showOracle && (

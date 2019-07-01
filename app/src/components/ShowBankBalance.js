@@ -29,7 +29,7 @@ const ShowBankBalance = ({ balanceEth }) => {
         </Text>
       </Box>
       <Box flex={1}>
-        <Text textAlign={"center"}>(~ {balUsd} USD)</Text>
+        <Text textAlign={"center"}>(~ ${balUsd} USD)</Text>
       </Box>
     </Flex>
   );

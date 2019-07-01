@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
-import { Heading, Box, Text, Button, Card, Flex, Pill } from "rimble-ui";
+import React from "react";
+import { Box, Text, Button, Flex, Pill } from "rimble-ui";
 import useBankContract from "../utils/useBankContract";
-import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const PauseContract = () => {
   const { isPaused, pauseContract, unpauseContract } = useBankContract();
@@ -9,18 +8,6 @@ const PauseContract = () => {
   const togglePauseContract = () => {
     isPaused ? unpauseContract.send() : pauseContract.send();
   };
-
-  useEffect(() => {
-    if (pauseContract.status) {
-      showTransactionToast(pauseContract.status);
-    }
-  }, [pauseContract.TXObjects.length, pauseContract.status]);
-
-  useEffect(() => {
-    if (unpauseContract.status) {
-      showTransactionToast(unpauseContract.status);
-    }
-  }, [unpauseContract.TXObjects.length, unpauseContract.status]);
 
   return (
     <Flex flexDirection="column">

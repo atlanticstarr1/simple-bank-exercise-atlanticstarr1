@@ -1,6 +1,5 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { drizzleReactHooks } from "drizzle-react";
-//import useAccount from "../utils/useAccount";
 
 const useBankContract = () => {
   const {
@@ -18,24 +17,23 @@ const useBankContract = () => {
   const account = drizzleState.accounts[0];
   const contracts = drizzleState.contracts;
   const transactions = drizzleState.transactions;
-  const accountBalWei = drizzleState.accountBalances[account];
 
-  let accountBalEth = web3.utils.fromWei(accountBalWei, "ether");
+  let accountBalEth = 0;
   let bankBalanceEth = 0;
   let minBalanceEth = 0;
   let contractBalanceEth = 0;
   let oneUsdEth = 0;
+  const accountBalance = drizzleState.accountBalances[account];
+  accountBalEth =
+    accountBalance && parseFloat(accountBalance / 1e18).toFixed(18);
+  const bankBalance = useCacheCall("SimpleBank", "getBalance", {
+    from: account
+  });
+  bankBalanceEth = bankBalance && parseFloat(bankBalance / 1e18).toFixed(18);
 
   // enroll
   const isEnrolled = useCacheCall("SimpleBank", "enrolled", account);
   const enrollAccount = useCacheSend("SimpleBank", "enroll");
-  const bankBalance = useCacheCall("SimpleBank", "getBalance", {
-    from: account
-  });
-  if (bankBalance) {
-    bankBalanceEth = web3.utils.fromWei(bankBalance, "ether");
-    bankBalanceEth = parseFloat(bankBalanceEth).toFixed(18);
-  }
 
   const deposit = useCacheSend("SimpleBank", "deposit");
   const withdraw = useCacheSend("SimpleBank", "withdraw");
@@ -51,10 +49,8 @@ const useBankContract = () => {
   const contractBalance = useCacheCall("SimpleBank", "getContractBalance", {
     from: account
   });
-  if (contractBalance) {
-    let eth = web3.utils.fromWei(contractBalance, "ether");
-    contractBalanceEth = parseFloat(eth).toFixed(5);
-  }
+  contractBalanceEth =
+    contractBalance && parseFloat(contractBalance / 1e18).toFixed(4);
 
   // bank interest rate
   const interestRate = useCacheCall("SimpleBank", "interestRate");
@@ -63,16 +59,11 @@ const useBankContract = () => {
 
   // bank minumum balance per 10 cents usd
   const minBalance = useCacheCall("SimpleBank", "minBalanceEth");
-  if (minBalance) {
-    let eth = web3.utils.fromWei(minBalance, "ether");
-    minBalanceEth = parseFloat(eth).toFixed(5);
-  }
+  minBalanceEth = parseFloat(minBalance / 1e18).toFixed(5);
   // 10 cents USD in ETH
   const tenCents = useCacheCall("SimpleBank", "tenCents");
   // 1 USD in ETH
-  if (tenCents) {
-    oneUsdEth = parseFloat((tenCents * 10) / 1e18).toFixed(5);
-  }
+  oneUsdEth = tenCents && parseFloat((tenCents * 10) / 1e18).toFixed(5);
 
   const minBalanceUsd = useCacheCall("SimpleBank", "minBalanceUsd");
   const setMinBalance = useCacheSend("SimpleBank", "setMinBalance");
@@ -85,8 +76,8 @@ const useBankContract = () => {
 
   // circuit breaker to pause contract
   const isPaused = useCacheCall("SimpleBank", "paused");
-  const pauseContract = useCacheSend("SimpleBank", "pause");
-  const unpauseContract = useCacheSend("SimpleBank", "unpause");
+  const pauseContract = useCacheSend("SimpleBank", "pauseContract");
+  const unpauseContract = useCacheSend("SimpleBank", "unPauseContract");
 
   const allEvents = useCacheEvents(
     "SimpleBank",
@@ -109,6 +100,7 @@ const useBankContract = () => {
     transactions,
     account,
     contractAddress,
+    contractBalanceEth,
     accountBalEth,
     isEnrolled,
     enrollAccount,
@@ -119,7 +111,6 @@ const useBankContract = () => {
     closeAccount,
     isOwner,
     bankAccounts,
-    contractBalanceEth,
     interestRate,
     payInterest,
     setInterestRate,

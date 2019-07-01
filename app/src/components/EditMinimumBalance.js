@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Flex, Button, Form } from "rimble-ui";
 import useBankContract from "../utils/useBankContract";
-import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const EditMinimumBalance = ({ balance }) => {
   const [minBalanceUsd, setMinBalanceUsd] = useState(balance);
@@ -17,16 +16,10 @@ const EditMinimumBalance = ({ balance }) => {
     setMinBalance.send(minBalanceUsd);
   };
 
-  useEffect(() => {
-    if (setMinBalance.status) {
-      showTransactionToast(setMinBalance.status);
-    }
-  }, [setMinBalance.TXObjects.length, setMinBalance.status]);
-
   return (
     <Form onSubmit={handleSubmit}>
       <Flex flexDirection="column">
-        <Form.Field label="Minimum Balance (USD)">
+        <Form.Field label="Min balance (USD)">
           <Form.Input
             type="number"
             min="1"

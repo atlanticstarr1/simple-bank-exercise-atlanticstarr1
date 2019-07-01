@@ -37,7 +37,7 @@ contract("SimpleBank", function(accounts) {
   });
 
   it("should not enroll if paused", async () => {
-    await mybank.pause();
+    await mybank.pauseContract();
     await catchRevert(mybank.enroll({ from: alice }));
   });
 
@@ -58,7 +58,7 @@ contract("SimpleBank", function(accounts) {
   });
 
   it("should not deposit if paused", async () => {
-    await mybank.pause();
+    await mybank.pauseContract();
     await catchRevert(mybank.deposit({ from: alice, value: deposit }));
   });
 
@@ -98,10 +98,10 @@ contract("SimpleBank", function(accounts) {
   });
 
   it("should withdraw if paused", async () => {
-    await mybank.paused();
     const initialAmount = 0;
     await mybank.enroll({ from: alice });
     await mybank.deposit({ from: alice, value: deposit });
+    await mybank.pauseContract();
     await mybank.withdraw(deposit, { from: alice });
     const balance = await mybank.getBalance({ from: alice });
 

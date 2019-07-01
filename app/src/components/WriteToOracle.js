@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Flex, Box, Button, Form, Text } from "rimble-ui";
 import useOracle from "../utils/useOracle";
-import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const WriteToOracle = () => {
   const [price, setPrice] = useState(0);
@@ -18,24 +17,18 @@ const WriteToOracle = () => {
     write.send(price, nonce);
   };
 
-  useEffect(() => {
-    if (write.status) {
-      showTransactionToast(write.status);
-    }
-  }, [write.TXObjects.length, write.status]);
-
   // START OF DEMO
   // DEMO PURPOSES ONLY - THE ORACLE WILL UPDATE ITS DATA ONCE PER 30 SECONDS. IN REALITY
   // THIS WILL BE A DAY
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const nonce = Math.floor(Math.random() * 1000);
-      write.send(price, nonce);
-    }, 2000000);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const nonce = Math.floor(Math.random() * 1000);
+  //     write.send(price, nonce);
+  //   }, 2000000);
 
-    return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //   return () => clearInterval(interval);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   // END OF DEMO
 

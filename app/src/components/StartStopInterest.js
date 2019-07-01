@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
-import { Box, Text, Button, Card, Flex, Pill, Heading } from "rimble-ui";
+import React from "react";
+import { Box, Text, Button, Flex, Pill } from "rimble-ui";
 import useBankContract from "../utils/useBankContract";
-import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const StartStopInterest = () => {
   const {
@@ -16,18 +15,6 @@ const StartStopInterest = () => {
       ? stopInterest.send({ from: account })
       : startInterest.send({ from: account });
   };
-
-  useEffect(() => {
-    if (startInterest.status) {
-      showTransactionToast(startInterest.status);
-    }
-  }, [startInterest.TXObjects.length, startInterest.status]);
-
-  useEffect(() => {
-    if (stopInterest.status) {
-      showTransactionToast(stopInterest.status);
-    }
-  }, [stopInterest.TXObjects.length, stopInterest.status]);
 
   return (
     <Flex flexDirection="column">

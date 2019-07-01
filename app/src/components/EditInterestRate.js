@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Flex, Box, Button, Form } from "rimble-ui";
+import React, { useState } from "react";
+import { Flex, Button, Form } from "rimble-ui";
 import useBankContract from "../utils/useBankContract";
-import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const EditInterestRate = ({ rate }) => {
   const [interest, setInterest] = useState(rate);
@@ -17,12 +16,6 @@ const EditInterestRate = ({ rate }) => {
     e.preventDefault();
     setInterestRate.send(interest);
   };
-
-  useEffect(() => {
-    if (setInterestRate.status) {
-      showTransactionToast(setInterestRate.status);
-    }
-  }, [setInterestRate.TXObjects.length, setInterestRate.status]);
 
   return (
     <Form onSubmit={handleSubmit}>

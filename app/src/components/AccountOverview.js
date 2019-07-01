@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex, Box, Text, QR, PublicAddress } from "rimble-ui";
+import { Flex, Box, QR, PublicAddress } from "rimble-ui";
 
 const AccountOverview = ({ account }) => {
   return (

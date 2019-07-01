@@ -1,18 +1,31 @@
-import React from "react";
-import { Flex, Box, Text, Card, Heading, Blockie, Icon } from "rimble-ui";
+import React, { useMemo } from "react";
+import { Flex, Box, Text, Card, Heading, Icon } from "rimble-ui";
 import useBankContract from "../utils/useBankContract";
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
 import CloseAccount from "./CloseAccount";
 import ShowBankBalance from "./ShowBankBalance";
 
-const BankAccount = ({ account }) => {
-  const { bankBalanceEth } = useBankContract();
+const BankAccount = () => {
+  const { bankBalanceEth, contracts, minBalanceEth } = useBankContract();
+
+  const isInterestPaid = () => {
+    console.log("interest paid");
+    let a = contracts.SimpleBank.events.filter(a => a.event === "InterestPaid");
+    if (a.length > 0 && bankBalanceEth >= minBalanceEth) {
+      window.toastProvider.addMessage("Interest paid", {
+        secondaryMessage: "Check your balance",
+        variant: "success"
+      });
+    }
+  };
+
+  useMemo(isInterestPaid, [contracts.SimpleBank.events]);
 
   return (
     <Card px={4} mx={"auto"}>
       <Flex>
-        <Box mb={4} flex={1 / 4}>
+        <Box mb={4}>
           <Icon color="tomato" name="AccountBalance" size="80" />
         </Box>
         <Box flex={1} my={3}>

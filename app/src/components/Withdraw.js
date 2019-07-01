@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Flex, Button, Form } from "rimble-ui";
 import useBankContract from "../utils/useBankContract";
-import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const Withdraw = () => {
   const [withdrawAmount, setWithdrawAmount] = useState(0);
@@ -17,12 +16,6 @@ const Withdraw = () => {
     const result = withdrawAmount * 1e18;
     withdraw.send(result, { from: account });
   };
-
-  useEffect(() => {
-    if (withdraw.status) {
-      showTransactionToast(withdraw.status);
-    }
-  }, [withdraw.TXObjects.length, withdraw.status]);
 
   return (
     <div>

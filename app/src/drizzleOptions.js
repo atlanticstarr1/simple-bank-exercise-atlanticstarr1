@@ -8,7 +8,7 @@ const options = {
   },
   syncAlways: true,
   events: {
-    SimpleBank: ["InterestPaid"]
+    SimpleBank: ["allEvents"]
   },
   web3: {
     block: false,

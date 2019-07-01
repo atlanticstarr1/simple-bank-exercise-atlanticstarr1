@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Flex, Box, Button, Form, Card, Heading, Text } from "rimble-ui";
+import React, { useState } from "react";
+import { Flex, Button, Form, Text } from "rimble-ui";
 import useOracle from "../utils/useOracle";
-import { showTransactionToast } from "../utils/TransactionToastUtil";
 
 const OracleSearcher = () => {
   const [seeker, setSeeker] = useState("");
@@ -16,12 +15,6 @@ const OracleSearcher = () => {
     e.preventDefault();
     changeSearcher.send(seeker);
   };
-
-  useEffect(() => {
-    if (changeSearcher.status) {
-      showTransactionToast(changeSearcher.status);
-    }
-  }, [changeSearcher.TXObjects.length, changeSearcher.status]);
 
   return (
     <>

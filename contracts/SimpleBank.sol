@@ -30,6 +30,7 @@ contract SimpleBank is Ownable, Pausable, Searcher {
     ILighthouse  public myLighthouse;
     /// Array of users registered
     address[] private accounts;
+    mapping(address => uint) accountsIndex;
     /// Users balance.
     mapping (address => uint) private balances;
     /// Function to allow contracts to be able to see if a user is enrolled.
@@ -49,8 +50,10 @@ contract SimpleBank is Ownable, Pausable, Searcher {
     event InterestStopped();
     // When interest is paid by bank
     event InterestPaid(uint _totalInterestPaid);
+    // When oracle updates the price of 10 cents worth of ETH.
+    event Poked(uint _tenCentsEth);
     /// When oracle data is not valid
-    event DataNotValid();
+    event OracleDataNotValid();
 
     /// Check if user is enrolled.
     modifier isEnrolled(){
@@ -79,6 +82,12 @@ contract SimpleBank is Ownable, Pausable, Searcher {
         _;
     }
 
+        /// Ensures interest payments are enabled
+    modifier interestEnabled {
+        require (interestRunning, "Interest payments stopped.");
+        _;
+    }
+
     /**
      * @dev Initializes the contract setting the deployer as the initial owner
      * the Rhombus Oracle address, the minumum balance in ETH, and starts interest payments
@@ -94,6 +103,7 @@ contract SimpleBank is Ownable, Pausable, Searcher {
     function enroll() public checkEnroll whenNotPaused returns (bool _enrolled){
         enrolled[msg.sender] = true;
         accounts.push(msg.sender);
+        accountsIndex[msg.sender] = accounts.length - 1;
         _enrolled = enrolled[msg.sender];
         emit Enrolled(msg.sender);
     }
@@ -126,6 +136,7 @@ contract SimpleBank is Ownable, Pausable, Searcher {
         uint totalBalance = balances[msg.sender];
         balances[msg.sender] = 0;
         enrolled[msg.sender] = false;
+        removeAccount(msg.sender);
         if(totalBalance > 0){
             msg.sender.transfer(totalBalance);
         }
@@ -159,7 +170,7 @@ contract SimpleBank is Ownable, Pausable, Searcher {
 
     /// @notice Get contract balance
     /// @return The balance of the contract
-    function getContractBalance() public view onlyOwner returns(uint) {
+    function getContractBalance() public view returns(uint) {
         return address(this).balance;
     }
 
@@ -192,6 +203,21 @@ contract SimpleBank is Ownable, Pausable, Searcher {
         }
     }
 
+    /// @notice Pause the contract. This will disable enrollments, deposits and interest payments.
+    /// Only withdrawals will be allowed
+    function pauseContract() public onlyOwner {
+        if(interestRunning){
+            interestRunning = false;
+        }
+        pause();
+    }
+
+    /// @notice Unpause the contract. This will resume all contract operations.
+    function unPauseContract() public onlyOwner {
+        interestRunning = true;
+        unpause();
+    }
+
     /// @notice Set 10 cents (USD) worth of ether. This will be called only by
     /// the oracle, and when the contract is not paused (circuit breaker pattern).
     function poke() public onlyLighthouse whenNotPaused {
@@ -199,17 +225,17 @@ contract SimpleBank is Ownable, Pausable, Searcher {
         uint _tenCents;
             (_tenCents, _valid) = myLighthouse.peekData();
             if (!_valid) {
-                emit DataNotValid();
+                emit OracleDataNotValid();
                 return;
             }
             tenCents = _tenCents;
             updateMinBalanceEth();
+            emit Poked(_tenCents);
     }
 
     /// @notice Pays interest to every account once criteria is met
     /// @dev Warn: Unbounded for loop is an anti-pattern
-    function payInterest() external onlyOwner whenNotPaused {
-        if (!interestRunning) return;
+    function payInterest() external onlyOwner interestEnabled {
         for (uint i = 0; i < accounts.length; i++) {
             address customerAddress = accounts[i];
             /// get customer balance
@@ -222,6 +248,17 @@ contract SimpleBank is Ownable, Pausable, Searcher {
             }
         }
         emit InterestPaid(totalInterestPaid);
+    }
+
+    /// @notice Remove an account from the contract
+    /// @dev Maybe look into safer algorithm to remove ?
+    function removeAccount(address _account) private {
+        uint index = accountsIndex[_account];
+        if (index >= accounts.length) return;
+        if (accounts.length > 1) {
+            accounts[index] = accounts[accounts.length-1];
+        }
+        accounts.length--;
     }
 
     /// @notice Set the minimum balance in ETH.
