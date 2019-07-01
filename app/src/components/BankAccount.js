@@ -9,18 +9,18 @@ import ShowBankBalance from "./ShowBankBalance";
 const BankAccount = () => {
   const { bankBalanceEth, contracts, minBalanceEth } = useBankContract();
 
-  const isInterestPaid = () => {
-    console.log("interest paid");
-    let a = contracts.SimpleBank.events.filter(a => a.event === "InterestPaid");
-    if (a.length > 0 && bankBalanceEth >= minBalanceEth) {
-      window.toastProvider.addMessage("Interest paid", {
-        secondaryMessage: "Check your balance",
-        variant: "success"
-      });
-    }
-  };
+  // const isInterestPaid = () => {
+  //   console.log("interest paid");
+  //   let a = contracts.SimpleBank.events.filter(a => a.event === "InterestPaid");
+  //   if (a.length > 0 && bankBalanceEth >= minBalanceEth) {
+  //     window.toastProvider.addMessage("Interest paid", {
+  //       secondaryMessage: "Check your balance",
+  //       variant: "success"
+  //     });
+  //   }
+  // };
 
-  useMemo(isInterestPaid, [contracts.SimpleBank.events]);
+  // useMemo(isInterestPaid, [contracts.SimpleBank.events]);
 
   return (
     <Card px={4} mx={"auto"}>

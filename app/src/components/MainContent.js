@@ -13,7 +13,7 @@ const MainContent = () => {
   useEffect(() => {
     console.log("status messages from main");
     debugger;
-    let events = contracts.SimpleBank.events;
+    //let events = contracts.SimpleBank.events;
     //a = contracts.SimpleBank.events.filter(a => a.event === "InterestPaid");
     const lastTxId = transactionStack[transactionStack.length - 1];
     let lastTx = transactions[lastTxId];
