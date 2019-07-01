@@ -72,7 +72,7 @@ contract SimpleBank is Ownable, Pausable, Searcher {
     modifier checkWithdraw(uint withdrawAmount){
         require(withdrawAmount > 0, "Withrawal must be greater than 0");
         require(balances[msg.sender] >= withdrawAmount, "Insufficient balance");
-        require(address(this).balance >= balances[msg.sender],"Bank doesn't have enough money.");
+        require(address(this).balance >= balances[msg.sender],"Bank cannot pay interest at the moment");
         _;
     }
 
@@ -132,7 +132,7 @@ contract SimpleBank is Ownable, Pausable, Searcher {
     /// @notice Close bank account and return all user's balance to them.
     /// checks-effects-interaction pattern to prevent re-entrancy
     /// @return The enrolled status of the user.
-    function closeAccount() external isEnrolled returns (bool) {
+    function closeAccount() external isEnrolled checkWithdraw(balances[msg.sender]) returns (bool) {
         uint totalBalance = balances[msg.sender];
         balances[msg.sender] = 0;
         enrolled[msg.sender] = false;

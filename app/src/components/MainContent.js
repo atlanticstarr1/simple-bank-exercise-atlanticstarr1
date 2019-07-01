@@ -13,12 +13,15 @@ const MainContent = () => {
   useEffect(() => {
     console.log("status messages from main");
     debugger;
-    //let events = contracts.SimpleBank.events;
-    //a = contracts.SimpleBank.events.filter(a => a.event === "InterestPaid");
     const lastTxId = transactionStack[transactionStack.length - 1];
+    let event = contracts.SimpleBank.events.filter(
+      a =>
+        (a.event === "Poked" || a.event === "OracleDataNotValid") &&
+        a.transactionHash === lastTxId
+    )[0];
     let lastTx = transactions[lastTxId];
-    lastTx && showTransactionToast(lastTx);
-  }, [transactionStack, transactions]);
+    lastTx && showTransactionToast(event, lastTx);
+  }, [contracts.SimpleBank.events, transactionStack, transactions]);
 
   return (
     <Flex flexDirection={"column"}>

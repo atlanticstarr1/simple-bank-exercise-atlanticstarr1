@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useBankContract from "../utils/useBankContract";
 import { Flex, Button, Box, Modal, Card, Heading, Text } from "rimble-ui";
 
@@ -6,20 +6,23 @@ const CloseAccount = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { account, closeAccount } = useBankContract();
 
-  const handleClose = e => {
-    e.preventDefault();
+  const handleClose = () => {
     closeAccount.send({ from: account });
   };
 
-  const show = e => {
-    e.preventDefault();
+  const show = () => {
     setIsOpen(true);
   };
 
-  const hide = e => {
-    e.preventDefault();
+  const hide = () => {
     setIsOpen(false);
   };
+
+  useEffect(() => {
+    if (closeAccount.status === "error") {
+      hide();
+    }
+  }, [closeAccount.status]);
 
   return (
     <>

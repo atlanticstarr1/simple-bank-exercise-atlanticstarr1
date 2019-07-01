@@ -1,8 +1,7 @@
 import TransactionToastMessages from "./TransactionToastMessages";
 
-export const showTransactionToast = tx => {
+export const showTransactionToast = (event, tx) => {
   const { status, error, receipt } = tx;
-  //const { Withdrawn, Deposited } = events;
   debugger;
   let toastMeta = getTransactionToastMeta(status);
   console.log(TransactionToastMessages, toastMeta);
@@ -25,9 +24,7 @@ export const showTransactionToast = tx => {
       InterestStopped,
       InterestPaid,
       Paused,
-      Unpaused,
-      Poked,
-      OracleDataNotValid
+      Unpaused
     } = receipt.events;
     if (Withdrawn) {
       const amount = parseFloat(Withdrawn.returnValues[1] / 1e18).toFixed(4);
@@ -50,7 +47,7 @@ export const showTransactionToast = tx => {
       toastMeta.secondaryMessage = `Interest payments resumed.`;
     } else if (InterestStopped) {
       toastMeta.message = `Interest stopped`;
-      toastMeta.secondaryMessage = `Interest payments temporarily stopped.`;
+      toastMeta.secondaryMessage = `Interest payments stopped.`;
       toastMeta.variant = "failure";
     } else if (InterestPaid) {
       toastMeta.message = `Interest paid`;
@@ -61,13 +58,15 @@ export const showTransactionToast = tx => {
     } else if (Unpaused) {
       toastMeta.message = `Contract unpaused`;
       toastMeta.secondaryMessage = `All features re-enabled`;
-    } else if (Poked) {
-      toastMeta.message = `Oracle updated`;
-      toastMeta.secondaryMessage = `ETH price changed`;
-    } else if (OracleDataNotValid) {
-      toastMeta.message = `Oracle error`;
-      toastMeta.secondaryMessage = `Oracle data not valid.`;
-      toastMeta.variant = "failure";
+    } else if (event) {
+      if (event.event === "Poked") {
+        toastMeta.message = `Oracle updated`;
+        toastMeta.secondaryMessage = `ETH price changed`;
+      } else if (event.event === "OracleDataNotValid") {
+        toastMeta.message = `Oracle error`;
+        toastMeta.secondaryMessage = `Oracle data not valid.`;
+        toastMeta.variant = "failure";
+      }
     }
   }
 
