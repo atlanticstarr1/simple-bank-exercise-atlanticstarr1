@@ -4,21 +4,23 @@ import { Flex, Heading, Box, Pill, Table, EthAddress, Link } from "rimble-ui";
 
 const ShowTransactions = () => {
   const [times, setTime] = useState([]);
-  const { account, allEvents, web3 } = useBankContract();
+  const [row, setRow] = useState();
+  const {
+    account,
+    bankBalanceEth,
+    interestRate,
+    minBalanceEth,
+    allEvents,
+    web3
+  } = useBankContract();
 
   let timestamps = [];
 
   let events =
     allEvents &&
     allEvents.filter(
-      a =>
-        a.returnValues.accountAddress === account &&
-        (a.event !== "Enrolled" && a.event !== "ClosedAccount")
+      a => a.returnValues.accountAddress === account //|| a.event === "InterestPaid"
     );
-
-  const calculateValue = a => {
-    return parseFloat(a.returnValues[1] / 1e18).toFixed(4);
-  };
 
   const getBlock = async blockNumber => {
     return await web3.eth.getBlock(blockNumber);
@@ -37,7 +39,64 @@ const ShowTransactions = () => {
     setTime(timestamps);
   };
 
+  const generateTableRow = () => {
+    console.log("in showtransactions.js");
+    let row;
+    row =
+      events &&
+      events.map(a => {
+        if (a.event === "InterestPaid" && bankBalanceEth < minBalanceEth) {
+          return null;
+        } else {
+          let value =
+            a.event === "Deposited" || a.event === "Withdrawn"
+              ? parseFloat(a.returnValues[1] / 1e18).toFixed(4)
+              : 0;
+          let to =
+            a.event === "Deposited"
+              ? a.address
+              : a.event === "Withdrawn"
+              ? a.returnValues[0]
+              : "0x0000000000000000000000000000000000000000";
+
+          return (
+            <tr key={a.id}>
+              <td>
+                <Link
+                  fontSize="smaller"
+                  href={"//rinkeby.etherscan.io/tx/" + a.transactionHash}
+                  target="_blank"
+                >
+                  <EthAddress address={a.transactionHash} truncate={true} />
+                </Link>
+              </td>
+              <td>
+                <Pill
+                  color={
+                    a.event === "Deposited"
+                      ? "green"
+                      : a.event === "Withdrawn"
+                      ? "red"
+                      : "primary"
+                  }
+                >
+                  {a.event}
+                </Pill>
+              </td>
+              <td>{value} ETH</td>
+              <td>
+                <EthAddress address={to} truncate={true} />
+              </td>
+              <td>{times[a.blockNumber]}</td>
+            </tr>
+          );
+        }
+      });
+    setRow(row);
+  };
+
   useMemo(getTxTime, [allEvents]);
+  useMemo(generateTableRow, [times]);
 
   return (
     <Flex flexDirection={"column"}>
@@ -55,37 +114,7 @@ const ShowTransactions = () => {
               <th>Time</th>
             </tr>
           </thead>
-          <tbody style={{ fontSize: "smaller" }}>
-            {events &&
-              events.map(a => (
-                <tr key={a.id}>
-                  <td>
-                    <Link
-                      fontSize="smaller"
-                      href={"//rinkeby.etherscan.io/tx/" + a.transactionHash}
-                      target="_blank"
-                    >
-                      <EthAddress address={a.transactionHash} truncate={true} />
-                    </Link>
-                  </td>
-                  <td>
-                    <Pill color={a.event === "Deposited" ? "primary" : "red"}>
-                      {a.event}
-                    </Pill>
-                  </td>
-                  <td>{calculateValue(a)} ETH</td>
-                  <td>
-                    <EthAddress
-                      address={
-                        a.event === "Deposited" ? a.address : a.returnValues[0]
-                      }
-                      truncate={true}
-                    />
-                  </td>
-                  <td>{times[a.blockNumber]}</td>
-                </tr>
-              ))}
-          </tbody>
+          <tbody style={{ fontSize: "smaller" }}>{row}</tbody>
         </Table>
       </Box>
     </Flex>

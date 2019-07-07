@@ -24,9 +24,10 @@ const BankStats = () => {
     contractAddress,
     oneUsdEth
   } = useBankContract();
+  console.log(drizzleState.web3);
 
   return (
-    <Card mx={"auto"} px={4}>
+    <Card mx={"auto"} px={4} mb={1}>
       <Flex mb={4}>
         <Box flex={1 / 2}>
           <NetworkIndicator
@@ -67,7 +68,7 @@ const BankStats = () => {
                 )}
               </Flex>
             </Flex>
-            <Box flex={1}>
+            <Box>
               <PublicAddress address={contractAddress} />
             </Box>
           </Flex>

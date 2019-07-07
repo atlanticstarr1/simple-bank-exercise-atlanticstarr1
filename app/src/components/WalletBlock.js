@@ -8,7 +8,7 @@ import ShowBankBalance from "./ShowBankBalance";
 const WalletBlock = () => {
   const { account, accountBalEth } = useBankContract();
   return (
-    <Card mx={"auto"} p={4}>
+    <Card mx={"auto"} p={4} mb={1}>
       <Flex>
         <Box flex={1 / 2}>
           <Heading.h4>Your Wallet</Heading.h4>

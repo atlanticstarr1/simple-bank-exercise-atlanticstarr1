@@ -173,6 +173,12 @@ contract("SimpleBank", function(accounts) {
     await catchRevert(mybank.closeAccount({ from: alice }));
   });
 
+  it("cannot close an account if contract is paused", async () => {
+    await mybank.enroll({ from: alice });
+    await mybank.pauseContract({ from: owner });
+    await catchRevert(mybank.closeAccount());
+  });
+
   it("should close account and unenroll customer", async () => {
     await mybank.enroll({ from: alice });
     await mybank.deposit({ from: alice, value: deposit });

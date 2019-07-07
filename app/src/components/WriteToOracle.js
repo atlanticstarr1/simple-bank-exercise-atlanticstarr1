@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Flex, Box, Button, Form, Text } from "rimble-ui";
 import useOracle from "../utils/useOracle";
 
@@ -24,7 +24,7 @@ const WriteToOracle = () => {
   //   const interval = setInterval(() => {
   //     const nonce = Math.floor(Math.random() * 1000);
   //     write.send(price, nonce);
-  //   }, 2000000);
+  //   }, 60000);
 
   //   return () => clearInterval(interval);
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
